@@ -8,13 +8,31 @@ export default defineConfig({
             { text: 'Home', link: '/' },
             { text: 'Key Features', link: '/key-features' },
             { text: 'Core Concepts', link: '/core-concepts' },
-            { text: 'Architecture', link: '/architecture' }
+            { text: 'Architecture', link: '/architecture' },
+            { text: 'Benchmarks', link: '/benchmarks' },
+            { text: 'Installing', link: '/installing' },
+            { text: 'Running', link: '/running' },
+            { text: 'Docker', link: '/docker' },
+            { text: 'gRPC API', link: '/grpc-api' },
+            { text: 'Rust', link: '/rust-client' },
+            { text: 'Python', link: '/python-client' },
+            { text: 'Developers', link: '/developers' },
+            { text: 'License', link: '/license' },
         ],
         sidebar: [
             { text: 'Home', link: '/' },
             { text: 'Key Features', link: '/key-features' },
             { text: 'Core Concepts', link: '/core-concepts' },
-            { text: 'Architecture', link: '/architecture' }
+            { text: 'Architecture', link: '/architecture' },
+            { text: 'Benchmarks', link: '/benchmarks' },
+            { text: 'Installing', link: '/installing' },
+            { text: 'Running', link: '/running' },
+            { text: 'Docker', link: '/docker' },
+            { text: 'gRPC API', link: '/grpc-api' },
+            { text: 'Rust Client', link: '/rust-client' },
+            { text: 'Python Client', link: '/python-client' },
+            { text: 'Developers', link: '/developers' },
+            { text: 'License', link: '/license' },
         ]
     }
 })
