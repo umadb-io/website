@@ -1,16 +1,20 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-    title: 'My Product',
+    title: 'UmaDB',
     description: 'A very basic VitePress website',
     themeConfig: {
         nav: [
             { text: 'Home', link: '/' },
-            { text: 'About', link: '/about' }
+            { text: 'Key Features', link: '/key-features' },
+            { text: 'Core Concepts', link: '/core-concepts' },
+            { text: 'Architecture', link: '/architecture' }
         ],
         sidebar: [
             { text: 'Home', link: '/' },
-            { text: 'About', link: '/about' }
+            { text: 'Key Features', link: '/key-features' },
+            { text: 'Core Concepts', link: '/core-concepts' },
+            { text: 'Architecture', link: '/architecture' }
         ]
     }
 })
