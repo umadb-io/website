@@ -1,6 +1,6 @@
 # Docker Containers
 
-maDB publishes multi-platform Docker images for `linux/amd64` and `linux/arm64`.
+UmaDB publishes multi-platform Docker images for `linux/amd64` and `linux/arm64`.
 
 Images are available from both:
 * [GitHub Container Registry](https://github.com/umadb-io/umadb/pkgs/container/umadb), and
