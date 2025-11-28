@@ -15,12 +15,12 @@ These are the kinds of requests that would be made by an application after a dec
 
 ![UmaDB benchmark](/images/UmaDB-append-bench-cond-1-per-request.png)
 
-The benchmark plot below shows total completed append operations per second from concurrent clients. Each client is
+The benchmark plot below shows total appended events per second from concurrent clients. Each client is
 writing 10 events per request with an append condition.
 
 ![UmaDB benchmark](/images/UmaDB-append-bench-cond-10-per-request.png)
 
-The benchmark plot below shows total completed append operations per second from concurrent clients. Each client is
+The benchmark plot below shows total appended events per second from concurrent clients. Each client is
 writing 100 events per request with an append condition.
 
 ![UmaDB benchmark](/images/UmaDB-append-bench-cond-100-per-request.png)
