@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
     title: 'UmaDB',
-    description: 'Open-source gRPC event store server built for Dynamic Consistency Boundaries in Rust',
+    description: 'High-performance open-source event store for Dynamic Consistency Boundaries',
     themeConfig: {
         // logo: '/logo.png',
         siteTitle: 'UmaDB',
