@@ -4,8 +4,8 @@ title: UmaDB — High-performance event store
 description: High-performance open-source event store with MVCC, Rust gRPC API, Docker images, and Dynamic Consistency Boundary support.
 hero:
   name: UmaDB
-  text: event store
-  tagline: Small footprint. Big performance.
+  text: 
+  tagline: Small footprint high-performance event store
   mockUrl: benchmarks
   image:
     src: /images/UmaDB-append-bench-cond-1-per-request.png

@@ -78,10 +78,6 @@
     --vp-c-brand-1: #b3861e;
     --vp-c-brand-2: #ffa94d;
 
-    /* Code / doc colors */
-    /*--vp-code-color: #ccc;*/
-    /*--vp-doc-color: #ccc;*/
-
     /* Border color */
     --vp-c-border: #b3861e;
 
@@ -98,4 +94,26 @@
 .VPButton.alt {
     border-color: #111111 !important;
 /*    color: #111111 !important;*/
+}
+
+/* --------------------- Code colors --------------------- */
+
+/* Light mode */
+:root {
+    --vp-code-color: #333;
+}
+
+/* Dark mode */
+html.dark {
+    --vp-code-color: #ddd;
+}
+
+/* Ensure inline code picks this up */
+.vp-doc :not(pre) > code {
+    color: var(--vp-code-color);
+}
+
+/* Optional: preformatted code blocks */
+pre, code {
+    color: var(--vp-code-color);
 }
