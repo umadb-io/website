@@ -5,7 +5,7 @@ description: High-performance open-source event store with MVCC, Rust gRPC API, 
 hero:
   name: UmaDB
   text: 
-  tagline: Small footprint high-performance event store
+  tagline: Small footprint. Big performance.
   mockUrl: benchmarks
   image:
     src: /images/UmaDB-append-bench-cond-1-per-request.png

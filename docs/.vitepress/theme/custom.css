@@ -29,16 +29,24 @@
     --vp-c-border: #D9AC38;
 }
 
+@media (min-width: 120px) {
+    .VPImage {
+        max-width: 75% !important;
+        max-height: 75% !important;
+    }
+
+}
+
 @media (min-width: 420px) {
-    .image-src {
-        max-width: 300px !important;
-        max-height: 300px !important;
+    .VPImage {
+        max-width: 90% !important;
+        max-height: 90% !important;
     }
 
 }
 
 @media (min-width: 640px) {
-    .image-src {
+    .VPImage {
         max-width: 420px !important;
         max-height: 420px !important;
     }
@@ -46,7 +54,7 @@
 }
 
 @media (min-width: 960px) {
-    .image-src {
+    .VPImage {
         max-width: 420px !important;
         max-height: 420px !important;
     }
