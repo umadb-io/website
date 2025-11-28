@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
     title: 'UmaDB',
-    description: 'High-performance open-source event store for Dynamic Consistency Boundaries',
+    description: 'High-performance open-source event store for Dynamic Consistency Boundaries.',
     themeConfig: {
         // logo: '/logo.png',
         siteTitle: 'UmaDB',
@@ -57,5 +57,47 @@ export default defineConfig({
             pattern: 'https://github.com/umadb-io/website/edit/main/docs/:path',
             text: 'Edit this page on GitHub'
         }
-    }
+    },
+    head: [
+        // --- Basic SEO ---
+        ['link', { rel: 'canonical', href: 'https://umadb.io' }],
+
+        // --- Favicon & PWA icons ---
+        ['link', { rel: 'icon', href: '/favicon.ico' }],
+        ['link', { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' }],
+
+        // --- Open Graph (Facebook / Slack / Discord previews) ---
+        ['meta', { property: 'og:title', content: 'UmaDB' }],
+        [
+            'meta',
+            {
+                property: 'og:description',
+                content:
+                    'High-performance open-source event store for Dynamic Consistency Boundaries.'
+            }
+        ],
+        ['meta', { property: 'og:url', content: 'https://umadb.io' }],
+        // [
+        //     'meta',
+        //     { property: 'og:image', content: 'https://umadb.io/images/social-card.png' }
+        // ],
+        ['meta', { property: 'og:type', content: 'website' }],
+
+        // --- Twitter Card ---
+        // // ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+        // // ['meta', { name: 'twitter:site', content: '@umadb_io' }],
+        // ['meta', { name: 'twitter:title', content: 'UmaDB' }],
+        // [
+        //     'meta',
+        //     {
+        //         name: 'twitter:description',
+        //         content:
+        //             'High-performance open-source event store for Dynamic Consistency Boundaries.'
+        //     }
+        // ],
+        // [
+        //     'meta',
+        //     { name: 'twitter:image', content: 'https://umadb.io/images/social-card.png' }
+        // ]
+    ],
 })
