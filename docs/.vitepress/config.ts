@@ -51,7 +51,7 @@ export default defineConfig({
         ],
         footer: {
             message: 'Released under the MIT License.',
-            copyright: 'Copyright © UmaDB Developers'
+            copyright: 'Copyright © 2025'
         },
         editLink: {
             pattern: 'https://github.com/umadb-io/website/edit/main/docs/:path',

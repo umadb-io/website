@@ -22,24 +22,24 @@ features:
     details: Fully compatible with DCB specification
     link: /grpc-api
     color: "amber"
-  - icon: ⚡
+  - icon: 🏃🏽‍♀️
     title: MVCC
     details: Non-blocking ACID transactional storage
     link: /architecture
     color: "amber"
-  - icon: 🦀
-    title: Lightning speed
-    details: High-performance server written in Rust
+  - icon: 🚀
+    title: High-performance
+    details: Scalable memory-safe server written in Rust
     link: /benchmarks
     color: "amber"
   - icon: 🦀
     title: Rust client
-    details: Super fast Rust client library
+    details: Synchronous and asynchronous client SDK
     link: /rust-client
     color: "amber"
   - icon: 🐍
     title: Python client
-    details: Super convenient Python client library
+    details: Ergonomic Python SDK for data science and AI
     link: /python-client
     color: "red"
   - icon: 🐳
