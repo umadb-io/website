@@ -4,34 +4,58 @@ export default defineConfig({
     title: 'UmaDB',
     description: 'Open-source gRPC event store server built for Dynamic Consistency Boundaries in Rust',
     themeConfig: {
+        // logo: '/logo.png',
+        siteTitle: 'UmaDB',
+        search: {
+            provider: 'local',
+        },
+        socialLinks: [
+            // You can add any icon from simple-icons (https://simpleicons.org/):
+            { icon: 'github', link: 'https://github.com/umadb-io/umadb' },
+        ],
         nav: [
-            { text: 'Features', link: '/key-features' },
-            { text: 'Concepts', link: '/core-concepts' },
-            { text: 'Architecture', link: '/architecture' },
-            { text: 'Benchmarks', link: '/benchmarks' },
-            { text: 'Installing', link: '/installing' },
-            { text: 'Running', link: '/running' },
-            { text: 'Docker', link: '/docker' },
-            { text: 'API', link: '/grpc-api' },
-            { text: 'Rust', link: '/rust-client' },
-            { text: 'Python', link: '/python-client' },
-            { text: 'Developers', link: '/developers' },
+            { text: 'Guide', link: '/what-is-umadb' },
+            {
+                text: 'Clients',
+                items: [
+                    { text: 'Rust', link: '/rust-client' },
+                    { text: 'Python', link: '/python-client' },
+                ]
+            },
             { text: 'License', link: '/license' },
         ],
         sidebar: [
-            { text: 'Home', link: '/' },
-            { text: 'Key Features', link: '/key-features' },
-            { text: 'Core Concepts', link: '/core-concepts' },
-            { text: 'Architecture', link: '/architecture' },
-            { text: 'Benchmarks', link: '/benchmarks' },
-            { text: 'Installing', link: '/installing' },
-            { text: 'Running', link: '/running' },
-            { text: 'Docker', link: '/docker' },
-            { text: 'gRPC API', link: '/grpc-api' },
-            { text: 'Rust Client', link: '/rust-client' },
-            { text: 'Python Client', link: '/python-client' },
+            {
+                text: 'Guide',
+                items: [
+                    { text: 'What is UmaDB', link: '/what-is-umadb' },
+                    { text: 'Key Features', link: '/key-features' },
+                    { text: 'Core Concepts', link: '/core-concepts' },
+                    { text: 'Architecture', link: '/architecture' },
+                    { text: 'Benchmarks', link: '/benchmarks' },
+                    { text: 'Installing', link: '/installing' },
+                    { text: 'Running', link: '/running' },
+                    { text: 'Docker', link: '/docker' },
+                    { text: 'gRPC API', link: '/grpc-api' },
+                ]
+            },
+            {
+                text: 'Clients',
+                items: [
+                    { text: 'Rust Client', link: '/rust-client' },
+                    { text: 'Python Client', link: '/python-client' },
+                ]
+            },
             { text: 'Developers', link: '/developers' },
             { text: 'License', link: '/license' },
-        ]
+        ],
+        footer: {
+            message: 'Released under the MIT License.',
+            copyright: 'Copyright © UmaDB Developers'
+        },
+        editLink: {
+            pattern: 'https://github.com/umadb-io/website/edit/main/docs/:path',
+            text: 'Edit this page on GitHub'
+        }
     }
 })

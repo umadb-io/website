@@ -195,6 +195,6 @@ Then, all dirty pages are written to the database file, and the database file is
 Then, the "oldest" header is overwritten with the writer's new TSN and the new page IDs of the B+ tree roots.
 The database file is then again flushed and synced to disk.
 
-![UmaDB sequence diagram](public/images/UmaDB-writer-sequence-diagram.png)
+![UmaDB sequence diagram](/images/UmaDB-writer-sequence-diagram.png)
 
 This design yields crash-safe commits, allows concurrent readers without blocking, and efficiently reuses space.

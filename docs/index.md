@@ -1,65 +1,51 @@
-![UmaDB logo](public/images/UmaDB-logo.png)
-
-
-# What is UmaDB
-
-**UmaDB** is a specialist open-source event store built for **dynamic consistency boundaries**.
-
-UmaDB supports event-driven architectures where consistency rules can adapt dynamically to
-business needs, rather than being hardwired into the database.
-
-UmaDB directly implements the [independent specification](https://dcb.events/specification/) for
-[Dynamic Consistency Boundaries](https://dcb.events) created by Bastian Waidelich, Sara Pellegrini,
-and Paul Grimshaw.
-
-UmaDB stores events in an append-only sequence, indexed by monotonically increasing gapless positions,
-and can be tagged for fast, precise filtering.
-
-UmaDB offers:
-
-* **High-performance concurrency** with non-blocking reads and writes
-* **Optimistic concurrency control** to prevent simultaneous write conflicts
-* **Dynamic business-rule enforcement** via query-driven append conditions
-* **Real-time subscriptions** with seamless catch-up and continuous delivery
-* **OSI-approved permissive open-source licenses** (MIT and Apache License 2.0)
-
-UmaDB makes new events fully durable before acknowledgements are returned to clients.
-
-## Quick Start
-
-Run Docker image (publish port 50051).
-
-```
-docker run --publish 50051:50051 umadb/umadb:latest
-```
-
-Install Python client (in a virtual environment).
-
-```
-pip install umadb
-```
-
-Read and write events (using the Python client).
-
-```python
-from umadb import Client, Event
-
-# Connect to UmaDB server
-client = Client("http://localhost:50051")
-
-# Create and append events
-event = Event(
-    event_type="UserCreated",
-    data=b"user data",
-    tags=["user", "creation"],
-)
-position = client.append([event])
-print(f"Event appended at position: {position}")
-
-# Read events
-events = client.read()
-for seq_event in events:
-    print(f"Position {seq_event.position}: {seq_event.event.event_type}")
-
-```
+---
+layout: home
+hero:
+  name: UmaDB
+#  text: Specialist event store for Dynamical Consistency Boundaries
+  tagline: High-performance gRPC server for event sourcing
+  mockUrl: benchmarks
+  image:
+    src: /images/UmaDB-append-bench-cond-1-per-request.png
+    alt: "UmaDB benchmark"
+  actions:
+    - theme: brand
+      text: Get Started
+      link: /what-is-umadb
+    - theme: alt
+      text: View on GitHub
+      link: https://github.com/umadb-io/umadb
+      
+features:
+  - icon: ✅
+    title: Dynamic Consistency Boundaries
+    details: Fully compatible with DCB specification
+    link: /grpc-api
+    color: "amber"
+  - icon: ⚡
+    title: MVCC
+    details: Non-blocking ACID transactional storage
+    link: /architecture
+    color: "amber"
+  - icon: 🦀
+    title: Lightning speed
+    details: High-performance server written in Rust
+    link: /benchmarks
+    color: "amber"
+  - icon: 🦀
+    title: Rust client
+    details: Super fast Rust client library
+    link: /rust-client
+    color: "amber"
+  - icon: 🐍
+    title: Python client
+    details: Super convenient Python client library
+    link: /python-client
+    color: "red"
+  - icon: 🐳
+    title: Docker containers
+    details: Multi-arch Docker scratch images
+    link: /docker
+    color: "amber"
+---
 
