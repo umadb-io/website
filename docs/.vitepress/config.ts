@@ -14,7 +14,7 @@ export default defineConfig({
             { icon: 'github', link: 'https://github.com/umadb-io/umadb' },
         ],
         nav: [
-            { text: 'Guide', link: '/what-is-umadb' },
+            { text: 'Server', link: '/what-is-umadb' },
             {
                 text: 'Clients',
                 items: [
@@ -22,7 +22,6 @@ export default defineConfig({
                     { text: 'Python', link: '/python-client' },
                 ]
             },
-            { text: 'License', link: '/license' },
         ],
         sidebar: [
             {
