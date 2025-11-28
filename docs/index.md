@@ -5,10 +5,11 @@ description: High-performance open-source event store with MVCC, Rust gRPC API, 
 hero:
   name: UmaDB
   text: event store
-  tagline: Small footprint. Big performance. Zero nonsense.
+  tagline: Small footprint. Big performance.
   mockUrl: benchmarks
   image:
     src: /images/UmaDB-append-bench-cond-1-per-request.png
+#    src: /images/UmaDB-logo.png
     alt: "UmaDB benchmark performance"
   actions:
     - theme: brand
@@ -22,7 +23,7 @@ features:
   - icon: ✅
     title: Dynamic Consistency Boundaries
     details: Fully compatible with DCB specification.
-    link: /grpc-api
+    link: /key-features
     color: "amber"
   - icon: 🏃🏽‍♀️
     title: MVCC

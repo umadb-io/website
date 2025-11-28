@@ -57,6 +57,13 @@ export default defineConfig({
             text: 'Edit this page on GitHub'
         }
     },
+    vite: {
+        css: {
+            preprocessorOptions: {
+                // optional if using SCSS
+            }
+        }
+    },
     head: [
         // --- Basic SEO ---
         ['link', { rel: 'canonical', href: 'https://umadb.io' }],

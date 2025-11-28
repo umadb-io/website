@@ -1,0 +1,101 @@
+/* --------------------- Root / Light Mode --------------------- */
+:root {
+    /* Home hero */
+    /*--vp-home-hero-name-color: #111111;*/
+    --vp-home-hero-name-background: transparent;
+    --vp-home-hero-description-color: #333;
+
+    /* Links */
+    --vp-link-color: #D9AC38;
+    --vp-link-hover-color: #F4C542;
+
+    /* Sidebar links */
+    --vp-sidebar-link-color: #D9AC38;
+    --vp-sidebar-link-hover-color: #F4C542;
+
+    /* Navbar links */
+    --vp-navbar-link-color: #D9AC38;
+    --vp-navbar-link-hover-color: #F4C542;
+
+    /* Footer links */
+    --vp-footer-link-color: #D9AC38;
+    --vp-footer-link-hover-color: #F4C542;
+
+    /* Theme brand for active sidebar items */
+    --vp-c-brand-1: #D9AC38;
+    --vp-c-brand-2: #F4C542;
+
+    /* Border color */
+    --vp-c-border: #D9AC38;
+}
+
+@media (min-width: 420px) {
+    .image-src {
+        max-width: 300px !important;
+        max-height: 300px !important;
+    }
+
+}
+
+@media (min-width: 640px) {
+    .image-src {
+        max-width: 420px !important;
+        max-height: 420px !important;
+    }
+
+}
+
+@media (min-width: 960px) {
+    .image-src {
+        max-width: 420px !important;
+        max-height: 420px !important;
+    }
+
+}
+
+/* --------------------- Dark Mode Overrides --------------------- */
+.vp-theme-dark {
+    /*--vp-home-hero-name-color: #ffffff;*/
+    --vp-home-hero-description-color: #ccc;
+
+    /* Links */
+    --vp-link-color: #79b8ff;
+    --vp-link-hover-color: #ffa94d;
+
+    /* Sidebar links */
+    --vp-sidebar-link-color: #79b8ff;
+    --vp-sidebar-link-hover-color: #ffa94d;
+
+    /* Navbar links */
+    --vp-navbar-link-color: #79b8ff;
+    --vp-navbar-link-hover-color: #ffa94d;
+
+    /* Footer links */
+    --vp-footer-link-color: #79b8ff;
+    --vp-footer-link-hover-color: #ffa94d;
+
+    /* Theme brand for active sidebar items */
+    --vp-c-brand-1: #b3861e;
+    --vp-c-brand-2: #ffa94d;
+
+    /* Code / doc colors */
+    /*--vp-code-color: #ccc;*/
+    /*--vp-doc-color: #ccc;*/
+
+    /* Border color */
+    --vp-c-border: #b3861e;
+
+}
+
+/* --------------------- Buttons --------------------- */
+.VPButton.brand {
+    background-color: #F4C542 !important;
+    border-color: #111111 !important;
+    color: #111111 !important;
+    font-weight: 700;
+}
+
+.VPButton.alt {
+    border-color: #111111 !important;
+/*    color: #111111 !important;*/
+}
