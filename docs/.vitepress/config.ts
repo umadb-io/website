@@ -25,7 +25,7 @@ export default defineConfig({
         ],
         sidebar: [
             {
-                text: 'Guide',
+                text: 'Server',
                 items: [
                     { text: 'What is UmaDB', link: '/what-is-umadb' },
                     { text: 'Key Features', link: '/key-features' },
