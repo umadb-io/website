@@ -26,40 +26,42 @@
     --vp-c-brand-2: #F4C542;
 
     /* Border color */
-    --vp-c-border: #D9AC38;
+    /*--vp-c-border: #D9AC38;*/
+    /*--vp-border: #D9AC38;*/
+    --vp-nav-logo-height: 30px;
 }
 
-@media (min-width: 120px) {
-    .VPImage {
-        max-width: 75% !important;
-        max-height: 75% !important;
-    }
+/*@media (min-width: 120px) {*/
+/*    .VPImage {*/
+/*        max-width: 75% !important;*/
+/*        max-height: 75% !important;*/
+/*    }*/
 
-}
+/*}*/
 
-@media (min-width: 420px) {
-    .VPImage {
-        max-width: 90% !important;
-        max-height: 90% !important;
-    }
+/*@media (min-width: 420px) {*/
+/*    .VPImage {*/
+/*        max-width: 90% !important;*/
+/*        max-height: 90% !important;*/
+/*    }*/
 
-}
+/*}*/
 
-@media (min-width: 640px) {
-    .VPImage {
-        max-width: 420px !important;
-        max-height: 420px !important;
-    }
+/*@media (min-width: 640px) {*/
+/*    .VPImage {*/
+/*        max-width: 420px !important;*/
+/*        max-height: 420px !important;*/
+/*    }*/
 
-}
+/*}*/
 
-@media (min-width: 960px) {
-    .VPImage {
-        max-width: 420px !important;
-        max-height: 420px !important;
-    }
+/*@media (min-width: 960px) {*/
+/*    .VPImage {*/
+/*        max-width: 420px !important;*/
+/*        max-height: 420px !important;*/
+/*    }*/
 
-}
+/*}*/
 
 /* --------------------- Dark Mode Overrides --------------------- */
 .vp-theme-dark {
@@ -87,9 +89,32 @@
     --vp-c-brand-2: #ffa94d;
 
     /* Border color */
-    --vp-c-border: #b3861e;
+    /*--vp-c-border: #b3861e;*/
 
 }
+
+.VPFeature {
+    border-color: #888 !important;
+    .icon {
+        border-style: solid;
+        border-color: #888 !important;
+        border-width: 1px !important;
+        background-color: #fff !important;
+    }
+}
+
+html.dark {
+    .VPFeature {
+        border-color: #888 !important;
+        .icon {
+            border-style: solid;
+            border-color: #888 !important;
+            border-width: 1px !important;
+            background-color: #000 !important;
+        }
+    }
+}
+
 
 /* --------------------- Buttons --------------------- */
 .VPButton.brand {
