@@ -13,7 +13,7 @@ hero:
   actions:
     - theme: brand
       text: Get Started
-      link: /what-is-umadb
+      link: /getting-started
     - theme: alt
       text: View on GitHub
       link: https://github.com/umadb-io/umadb

@@ -2,6 +2,12 @@
 
 ## Dynamic Consistency Boundaries
 
+UmaDB is designed to be directly consistent with the [specification for DCB](https://dcb.events/specification/).
+
+The API is simple and intuitive, and has been tested and approved by the DCB team.
+
+UmaDB has one method for reading events, and one method for writing events.
+
 UmaDB lets you define exactly when an event can be appended, creating a flexible consistency boundary. You can:
 
 * **Enforce business rules** by ensuring new events are appended only if certain events do not already exist
@@ -23,23 +29,12 @@ consistent snapshot of the database. UmaDB reclaims space efficiently from unrea
 This design combines non-blocking concurrency, atomic commits, crash safety, and efficient space management,
 making UmaDB fast, safe, and consistent under load.
 
-## Simple Compliant DCB API
-
-UmaDB has one method for reading events, and one method for writing events.
-
-The `read()` and `append()` methods are fully documented and easy to use.
-
-They are designed and implemented to comply with the original, well-written, and thoughtful specification for DCB.
-
 ## Append Request Batching
 
-Concurrent append requests are automatically grouped and processed as a nested transaction:
+Concurrent append requests are automatically grouped and processed together:
 
 * Requests are queued and collected into batches.
-* A dedicated writer thread processes batches of waiting requests.
 * Each request in the batch is processed individually, maintaining per-request **atomicity** and **isolation**.
-* Dirty pages are flushed to disk once all requests in the batch have been processed.
-* A new header page is written and flushed after all dirty pages are persisted.
 * Individual responses are returned once the entire batch is successfully committed.
 
 This approach **significantly improves throughput under concurrent load** by amortizing disk I/O

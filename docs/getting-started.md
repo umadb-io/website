@@ -1,4 +1,41 @@
-# Running UmaDB Server
+# Getting Started
+
+Get started with UmaDB by installing and running the server.
+
+Then try out the [Rust client](./rust-client) or [Python client](./python-client) examples.
+
+## Installing UmaDB Server
+
+Pre-built binaries are available for Linux and macOS.
+
+Alternatively, you can install using Cargo or run [Docker](./docker) containers.
+
+### Pre-built Binaries
+
+Pre-built UmaDB binaries are available for:
+
+* x86_64 (AMD64)
+  * Linux (glibc)
+  * Linux (musl, static build)
+  * macOS
+* aarch64 (ARM64)
+  * Linux (glibc)
+  * Linux (musl, static build)
+  * macOS
+  
+The files are available on [GitHub Releases](https://github.com/umadb-io/umadb/releases).
+
+### Build with Cargo
+
+You can install UmaDB directly from [source](https://crates.io/crates/umadb) using Cargo:
+
+```
+cargo install umadb
+```
+
+Cargo will compile UmaDB locally and place the resulting `umadb` binary in your `PATH`.
+
+## Running UmaDB Server
 
 Start the `umadb` server by specifying the listen address and the database path:
 
@@ -19,7 +56,7 @@ The TLS options can also be provided using environment variables:
 * `UMADB_TLS_CERT` — Path to the server TLS certificate (PEM), equivalent to `--tls-cert`
 * `UMADB_TLS_KEY` — Path to the server TLS private key (PEM), equivalent to `--tls-key`
 
-## Self-signed TLS Certificate
+### Self-signed TLS Certificate
 
 For development and testing purposes, you can create a self-signed TSL certificate with the following command:
 
