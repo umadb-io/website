@@ -17,7 +17,7 @@ export default defineConfig({
             {
                 text: 'Server',
                 items: [
-                    { text: 'What is UmaDB', link: '/what-is-umadb' },
+                    { text: 'What is UmaDB?', link: '/what-is-umadb' },
                     { text: 'Key Features', link: '/key-features' },
                     { text: 'Core Concepts', link: '/core-concepts' },
                     { text: 'Architecture', link: '/architecture' },
