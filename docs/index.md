@@ -25,7 +25,7 @@ features:
     link: /key-features
     color: "amber"
   - icon: 🏃🏽‍♀️
-    title: MVCC
+    title: Copy-on-Write MVCC
     details: Non-blocking ACID transactional storage.
     link: /architecture
     color: "amber"
