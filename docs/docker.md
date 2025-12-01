@@ -1,3 +1,12 @@
+---
+head:
+  - - meta
+    - name: description
+      content: Explains how to get started with UmaDB Docker containers.
+  - - meta
+    - name: keywords
+      content: UmaDB, Docker, download, downloads, linux, macOS 
+---
 # Docker Containers
 
 UmaDB publishes multi-platform Docker images for `linux/amd64` and `linux/arm64`.

@@ -1,3 +1,12 @@
+---
+head:
+  - - meta
+    - name: description
+      content: Explains how to get started with UmaDB including downloading, installation and running the server.
+  - - meta
+    - name: keywords
+      content: download, downloads, install, UmaDB, linux, macOS, Cargo 
+---
 # Getting Started
 
 Get started with UmaDB by installing and running the server.
@@ -6,11 +15,11 @@ Then try out the [Rust client](./rust-client) or [Python client](./python-client
 
 ## Installing UmaDB Server
 
-Pre-built binaries are available for Linux and macOS.
+Pre-built binaries are available to download for Linux and macOS.
 
 Alternatively, you can install using Cargo or run [Docker](./docker) containers.
 
-### Pre-built Binaries
+### Download Binaries
 
 Pre-built UmaDB binaries are available for:
 
@@ -23,7 +32,7 @@ Pre-built UmaDB binaries are available for:
   * Linux (musl, static build)
   * macOS
   
-The files are available on [GitHub Releases](https://github.com/umadb-io/umadb/releases).
+The downloads are available on [GitHub Releases](https://github.com/umadb-io/umadb/releases).
 
 ### Build with Cargo
 
