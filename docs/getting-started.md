@@ -11,7 +11,7 @@ head:
 
 Get started with UmaDB by installing and running the server.
 
-Then try out the [Rust client](./rust-client) or [Python client](./python-client) examples.
+Then try out the [Python](./python-client), [PHP](./php-client), or [Rust](./rust-client) client examples.
 
 ## Installing UmaDB Server
 

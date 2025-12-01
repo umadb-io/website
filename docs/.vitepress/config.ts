@@ -30,8 +30,9 @@ export default defineConfig({
             {
                 text: 'Clients',
                 items: [
-                    { text: 'Rust', link: '/rust-client' },
                     { text: 'Python', link: '/python-client' },
+                    { text: 'PHP', link: '/php-client' },
+                    { text: 'Rust', link: '/rust-client' },
                 ]
             },
         ],
@@ -52,8 +53,9 @@ export default defineConfig({
             {
                 text: 'Clients',
                 items: [
-                    { text: 'Rust Client', link: '/rust-client' },
                     { text: 'Python Client', link: '/python-client' },
+                    { text: 'PHP Client', link: '/php-client' },
+                    { text: 'Rust Client', link: '/rust-client' },
                 ]
             },
             { text: 'Developers', link: '/developers' },
