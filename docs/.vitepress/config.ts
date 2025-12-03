@@ -3,6 +3,10 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
     title: 'UmaDB',
     description: 'High-performance open-source event store for Dynamic Consistency Boundaries.',
+    sitemap: {
+        hostname: 'https://umadb.io'
+    },
+    lastUpdated: true,
     themeConfig: {
         logo: '/images/UmaDB-Logo-FigureOnly.png',
         siteTitle: 'UmaDB',
@@ -89,37 +93,47 @@ export default defineConfig({
         ['link', { rel: 'manifest', href: '/site.webmanifest' }],
 
         // --- Open Graph (Facebook / Slack / Discord previews) ---
-        ['meta', { property: 'og:title', content: 'UmaDB' }],
-        [
-            'meta',
-            {
-                property: 'og:description',
-                content:
-                    'High-performance open-source event store for Dynamic Consistency Boundaries.'
-            }
-        ],
         ['meta', { property: 'og:url', content: 'https://umadb.io' }],
-        // [
-        //     'meta',
-        //     { property: 'og:image', content: 'https://umadb.io/images/social-card.png' }
-        // ],
         ['meta', { property: 'og:type', content: 'website' }],
 
         // --- Twitter Card ---
-        // // ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
-        // // ['meta', { name: 'twitter:site', content: '@umadb_io' }],
-        // ['meta', { name: 'twitter:title', content: 'UmaDB' }],
-        // [
-        //     'meta',
-        //     {
-        //         name: 'twitter:description',
-        //         content:
-        //             'High-performance open-source event store for Dynamic Consistency Boundaries.'
-        //     }
-        // ],
-        // [
-        //     'meta',
-        //     { name: 'twitter:image', content: 'https://umadb.io/images/social-card.png' }
-        // ]
+        ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
     ],
+
+    transformPageData(pageData) {
+        const isHome = pageData.frontmatter.layout === 'home';
+
+        // Determine the effective page title:
+        //
+        // 1. If frontmatter.title exists → use it
+        // 2. Else if home page → "UmaDB"
+        // 3. Else → `${pageData.title} | UmaDB`
+        const title =
+            pageData.frontmatter.title ??
+            (isHome ? 'UmaDB' : `${pageData.title} | UmaDB`);
+
+        const description =
+            pageData.frontmatter.description ||
+            pageData.description ||
+            'High-performance open-source event store for Dynamic Consistency Boundaries.';
+
+        const image = pageData.frontmatter.image ||
+            'https://umadb.io/images/UmaDB-logo.png';
+
+        // Build canonical URL
+        const canonicalUrl = `https://umadb.io/${pageData.relativePath}`
+            .replace(/index\.md$/, '')   // remove index.md
+            .replace(/\.md$/, '.html');  // convert md to html output
+
+        pageData.frontmatter.head ??= [];
+        pageData.frontmatter.head.push(
+            ['meta', { property: 'og:title', content: title }],
+            ['meta', { property: 'og:description', content: description }],
+            ['meta', { property: 'og:image', content: image }],
+            ['meta', { property: 'og:url', content: canonicalUrl }],
+            ['meta', { property: 'twitter:title', content: title }],
+            ['meta', { property: 'twitter:description', content: description }],
+            ['meta', { property: 'twitter:image', content: image }]
+        );
+    }
 })
