@@ -118,7 +118,7 @@ export default defineConfig({
             'High-performance open-source event store for Dynamic Consistency Boundaries.';
 
         const image = pageData.frontmatter.image ||
-            'https://umadb.io/images/UmaDB-logo.png';
+            'https://umadb.io/images/UmaDB-brand-figure-torso-and-lettering.png';
 
         // Build canonical URL
         const canonicalUrl = `https://umadb.io/${pageData.relativePath}`
