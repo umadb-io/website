@@ -7,28 +7,28 @@
 
     /* Links */
     --vp-link-color: #D9AC38;
-    --vp-link-hover-color: #F4C542;
+    --vp-link-hover-color: #f4bd17;
 
     /* Sidebar links */
     --vp-sidebar-link-color: #D9AC38;
-    --vp-sidebar-link-hover-color: #F4C542;
+    --vp-sidebar-link-hover-color: #f4bd17;
 
     /* Navbar links */
     --vp-navbar-link-color: #D9AC38;
-    --vp-navbar-link-hover-color: #F4C542;
+    --vp-navbar-link-hover-color: #f4bd17;
 
     /* Footer links */
     --vp-footer-link-color: #D9AC38;
-    --vp-footer-link-hover-color: #F4C542;
+    --vp-footer-link-hover-color: #f4bd17;
 
     /* Theme brand for active sidebar items */
     --vp-c-brand-1: #D9AC38;
-    --vp-c-brand-2: #F4C542;
+    --vp-c-brand-2: #f4bd17;
 
     /* Border color */
     /*--vp-c-border: #D9AC38;*/
     /*--vp-border: #D9AC38;*/
-    --vp-nav-logo-height: 30px;
+    --vp-nav-logo-height: 70%;
 }
 
 /*@media (min-width: 120px) {*/
@@ -64,32 +64,32 @@
 /*}*/
 
 /* --------------------- Dark Mode Overrides --------------------- */
-.vp-theme-dark {
-    /*--vp-home-hero-name-color: #ffffff;*/
-    --vp-home-hero-description-color: #ccc;
+.dark {
+    --vp-home-hero-name-color: #ffffff;
+    /*--vp-home-hero-description-color: #ccc;*/
 
     /* Links */
-    --vp-link-color: #79b8ff;
-    --vp-link-hover-color: #ffa94d;
+    --vp-link-color: #f4bd17;
+    --vp-link-hover-color: #f4bd17;
 
-    /* Sidebar links */
-    --vp-sidebar-link-color: #79b8ff;
-    --vp-sidebar-link-hover-color: #ffa94d;
+     /*Sidebar links*/
+    --vp-sidebar-link-color: #f4bd17;
+    --vp-sidebar-link-hover-color: #f4bd17;
 
-    /* Navbar links */
-    --vp-navbar-link-color: #79b8ff;
-    --vp-navbar-link-hover-color: #ffa94d;
+     /*Navbar links*/
+    --vp-navbar-link-color: #f4bd17;
+    --vp-navbar-link-hover-color: #f4bd17;
 
-    /* Footer links */
-    --vp-footer-link-color: #79b8ff;
-    --vp-footer-link-hover-color: #ffa94d;
+     /*Footer links*/
+    --vp-footer-link-color: #f4bd17;
+    --vp-footer-link-hover-color: #f4bd17;
 
-    /* Theme brand for active sidebar items */
-    --vp-c-brand-1: #b3861e;
-    --vp-c-brand-2: #ffa94d;
+     /*Theme brand for active sidebar items*/
+    --vp-c-brand-1: #f4bd17;
+    --vp-c-brand-2: #f4bd17;
 
-    /* Border color */
-    /*--vp-c-border: #b3861e;*/
+     /*Border color */
+    --vp-c-border: #b3861e;
 
 }
 
@@ -118,7 +118,7 @@ html.dark {
 
 /* --------------------- Buttons --------------------- */
 .VPButton.brand {
-    background-color: #F4C542 !important;
+    background-color: #f4bd17 !important;
     border-color: #111111 !important;
     color: #111111 !important;
     font-weight: 700;

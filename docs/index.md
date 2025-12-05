@@ -8,12 +8,13 @@ hero:
   tagline: Small footprint. Big performance.
   mockUrl: benchmarks
   image:
-    src: /images/UmaDB-Logo-FigureOnly.png
+    src: /images/UmaDB-brand-figure-torso.png
+#    src: /images/UmaLogoLetteringWithFigureBehind.png
     alt: "UmaDB Logo"
   actions:
     - theme: brand
       text: Get Started
-      link: /getting-started
+      link: /what-is-umadb
     - theme: alt
       text: View on GitHub
       link: https://github.com/umadb-io/umadb
@@ -24,15 +25,15 @@ features:
     details: Fully compatible with DCB specification.
     link: /key-features
     color: "amber"
-  - icon: 🏃🏽‍♀️
-    title: Copy-on-Write MVCC
-    details: Non-blocking ACID transactional storage.
-    link: /architecture
-    color: "amber"
   - icon: 🚀
     title: High-performance
     details: Scalable, memory-safe Rust server built for low latency.
     link: /benchmarks
+    color: "amber"
+  - icon: 📝
+    title: Copy-on-Write MVCC
+    details: Non-blocking ACID transactional storage.
+    link: /architecture
     color: "amber"
   - icon: 🦀
     title: Rust client

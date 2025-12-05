@@ -8,8 +8,8 @@ export default defineConfig({
     },
     lastUpdated: true,
     themeConfig: {
-        logo: '/images/UmaDB-Logo-FigureOnly.png',
-        siteTitle: 'UmaDB',
+        logo: '/images/UmaDB-brand-lettering-small.png',
+        siteTitle: "",
         search: {
             provider: 'local',
         },
