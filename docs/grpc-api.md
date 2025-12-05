@@ -152,8 +152,8 @@ If the `condition` does not fail, the server will return an [`AppendResponse`](#
 
 If the append condition fails, the server will return a gRPC error response with gRPC status `FAILED_PRECONDITION`
 and a human-readable message string.  In addition, the gRPC status details attribute will have a serialised
-`ErrorResponse` message that has the same human-readable message string, and [`INTEGRITY`](#error-type) as
-the `error_type`., which can be unpacked and converted into a client "integrity" error.
+[`ErrorResponse`](#error-response) message, that has the same human-readable message string and [`INTEGRITY`](#error-type) as
+the `error_type`.
 
 If an operation fails, the server will return a gRPC error response with a suitable gRPC status code
 and a human-readable message string. In addition, the gRPC status details attribute will have a serialised
@@ -189,17 +189,17 @@ event processing components have become up-to-data.
 
 Send a `HeadRequest` message to the [`Head`](#rpcs) RPC to get the position of the last recorded event in the event store.
 
-_No fields._
+_This message has no fields._
 
 ## Head Response
 
 The server returns an `HeadResponse` message in response to each [`HeadRequest`](#head-request) message sent by clients to the [`Head`](#rpcs) RPC.
 
-The `position` field contains the sequence position of the last recorded event in the store, or `None` if the store is empty.
-
 | Field      | Type                       | Description                                                       |
 |------------|----------------------------|-------------------------------------------------------------------|
 | `position` | **optional**&nbsp;`uint64` | The latest known event position, or `None` if the store is empty. |
+
+The `position` field contains the sequence position of the last recorded event in the store, or `None` if the store is empty.
 
 ## Error Response
 

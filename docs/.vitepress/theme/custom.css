@@ -6,28 +6,28 @@
     --vp-home-hero-description-color: #333;
 
     /* Links */
-    --vp-link-color: #D9AC38;
+    --vp-link-color: #8c6a0b;
     --vp-link-hover-color: #f4bd17;
 
     /* Sidebar links */
-    --vp-sidebar-link-color: #D9AC38;
+    --vp-sidebar-link-color: #8c6a0b;
     --vp-sidebar-link-hover-color: #f4bd17;
 
     /* Navbar links */
-    --vp-navbar-link-color: #D9AC38;
+    --vp-navbar-link-color: #8c6a0b;
     --vp-navbar-link-hover-color: #f4bd17;
 
     /* Footer links */
-    --vp-footer-link-color: #D9AC38;
+    --vp-footer-link-color: #8c6a0b;
     --vp-footer-link-hover-color: #f4bd17;
 
     /* Theme brand for active sidebar items */
-    --vp-c-brand-1: #D9AC38;
+    --vp-c-brand-1: #8c6a0b;
     --vp-c-brand-2: #f4bd17;
 
     /* Border color */
-    /*--vp-c-border: #D9AC38;*/
-    /*--vp-border: #D9AC38;*/
+    /*--vp-c-border: #8c6a0b;*/
+    /*--vp-border: #8c6a0b;*/
     --vp-nav-logo-height: 70%;
 }
 
