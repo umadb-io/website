@@ -9,17 +9,16 @@ head:
 ---
 # Docker Containers
 
-UmaDB publishes multi-platform Docker images for `linux/amd64` and `linux/arm64`.
+## Multi-Platform Images
 
 Images are available from both:
 * [GitHub Container Registry](https://github.com/umadb-io/umadb/pkgs/container/umadb), and
 * [Docker Hub](https://hub.docker.com/r/umadb/umadb).
 
-Each image is built from the Docker `scratch` base image and contains the
-statically linked Linux (musl) binaries distributed in GitHub Releases:
+UmaDB publishes multi-platform Docker images for `linux/amd64` and `linux/arm64`.
 
-* x86_64 (AMD64)
-* aarch64 (ARM64)
+Each image is built from the Docker `scratch` base image and contains a copy of
+the same statically linked Linux (musl) binaries distributed in GitHub Releases.
 
 ## Pulling the Docker Image
 
@@ -73,7 +72,7 @@ container:
 docker run --publish 50051:50051 umadb/umadb:latest
 ```
 
-## Persistent Storage with Local Directory
+## Data Storage
 
 By default, the UmaDB container stores data in `/data/uma.db`. To persist
 the database file on your host, mount a local directory to the container's `/data`
@@ -85,7 +84,7 @@ docker run --volume /path/to/local/data:/data umadb/umadb:latest
 
 UmaDB will then create and use `/path/to/local/data/uma.db` to store your events.
 
-## Transaction Layer Security (TLS)
+## Transaction Layer Security
 
 By default, `umadb` starts an "insecure" gRPC server. To enable TLS, mount a local folder
 containing you certificate and key, and provide their paths via environment variables

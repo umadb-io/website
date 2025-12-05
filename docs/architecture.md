@@ -1,4 +1,15 @@
+---
+head:
+  - - meta
+    - name: description
+      content: How UmaDB work internally, detailing its specialist B+ trees and copy-on-write MVCC design.
+  - - meta
+    - name: keywords
+      content: UmaDB, architecture, design, MVCC, B+ trees, copy-on-write 
+---
 # Architecture
+
+## Overview
 
 UmaDB is organized into a set of layered components that work together to provide a durable, concurrent, and queryable
 event store. Each layer has a clear responsibility, from client communication at the top to low-level file management

@@ -1,3 +1,12 @@
+---
+head:
+  - - meta
+    - name: description
+      content: Explains the key features of UmaDB, such as dynamic consistency boundaries, multi-version concurrency control, and append request batching.
+  - - meta
+    - name: keywords
+      content: UmaDB, database, event sourcing, append-only, append-only database, append-only log, event store, event stream, event stream database
+---
 # Key Features
 
 ## Dynamic Consistency Boundaries

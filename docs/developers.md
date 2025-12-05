@@ -1,3 +1,12 @@
+---
+head:
+  - - meta
+    - name: description
+      content: How to build the UmaDB server from source.
+  - - meta
+    - name: keywords
+      content: UmaDB, build, server, source, Cargo, Rust
+---
 # Building the UmaDB Server
 
 To build the UmaDB server binary executable, you need to have Rust and Cargo installed. If you don't have them installed, you can get them from [rustup.rs](https://rustup.rs/).

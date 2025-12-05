@@ -1,3 +1,12 @@
+---
+head:
+  - - meta
+    - name: description
+      content: How to use UmaDB with Rust
+  - - meta
+    - name: keywords
+      content: UmaDB, client, Rust
+---
 # Rust Clients
 
 The [official Rust client](https://crates.io/crates/umadb-client) for UmaDB is available on crates.io.

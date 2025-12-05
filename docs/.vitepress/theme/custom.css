@@ -141,12 +141,12 @@ html.dark {
     --vp-code-color: #ddd;
 }
 
-/* Ensure inline code picks this up */
-.vp-doc :not(pre) > code {
-    color: var(--vp-code-color);
-}
+/*!* Ensure inline code picks this up *!*/
+/*.vp-doc :not(pre) > code {*/
+/*    color: var(--vp-code-color);*/
+/*}*/
 
-/* Optional: preformatted code blocks */
-pre, code {
-    color: var(--vp-code-color);
-}
+/*!* Optional: preformatted code blocks *!*/
+/*pre, code {*/
+/*    color: var(--vp-code-color);*/
+/*}*/

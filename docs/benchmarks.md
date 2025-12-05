@@ -1,4 +1,15 @@
+---
+head:
+  - - meta
+    - name: description
+      content: Some benchmarks for UmaDB, read and writing with different loads and concurrency levels.
+  - - meta
+    - name: keywords
+      content: UmaDB, benchmark, benchmark, performance, throughput, read, write, p50, p95 
+---
 # Benchmarks
+
+## Hardware
 
 The benchmark plots below were produced on an Apple MacBook Pro M4 (10 performance cores and 4 efficiency cores),
 using the UmaDB Rust gRPC client to make gRPC requests to UmaDB gRPC server listening on `http://127.0.0.1:50051`.

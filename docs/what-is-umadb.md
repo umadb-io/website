@@ -1,8 +1,17 @@
+---
+head:
+  - - meta
+    - name: description
+      content: High-performance event store for Dynamic Consistency Boundaries
+  - - meta
+    - name: keywords
+      content: UmaDB, event store, DCB, append-only, real-time, event-driven, database
+---
 
 ![UmaDB logo](/images/UmaDB-brand-figure-torso-and-lettering.png)
 
 
-# What is UmaDB?
+## What is UmaDB?
 
 UmaDB is a specialist open-source event store built for Dynamic Consistency Boundaries.
 
@@ -26,41 +35,10 @@ UmaDB offers:
 
 UmaDB makes new events fully durable before acknowledgements are returned to clients.
 
-## Quick Start
+## Getting Started
 
-Run Docker image (publish port 50051).
+Get started with UmaDB by [installing](./install) and [running](./cli) the `umadb` binary,
+or use the [Docker image](./docker).
 
-```
-docker run --publish 50051:50051 umadb/umadb:latest
-```
-
-Install Python client (in a virtual environment).
-
-```
-pip install umadb
-```
-
-Read and write events (using the Python client).
-
-```python
-from umadb import Client, Event
-
-# Connect to UmaDB server
-client = Client("http://localhost:50051")
-
-# Create and append events
-event = Event(
-    event_type="UserCreated",
-    data=b"user data",
-    tags=["user", "creation"],
-)
-position = client.append([event])
-print(f"Event appended at position: {position}")
-
-# Read events
-events = client.read()
-for seq_event in events:
-    print(f"Position {seq_event.position}: {seq_event.event.event_type}")
-
-```
+Then try out the [Python](./python-client), [PHP](./php-client), or [Rust](./rust-client) client examples.
 

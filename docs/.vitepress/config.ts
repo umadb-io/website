@@ -22,12 +22,14 @@ export default defineConfig({
                 text: 'Server',
                 items: [
                     { text: 'What is UmaDB?', link: '/what-is-umadb' },
+                    { text: 'Quick Start', link: '/quick-start' },
+                    { text: 'Install Guide', link: '/install' },
+                    { text: 'Using the CLI', link: '/cli' },
                     { text: 'Key Features', link: '/key-features' },
                     { text: 'Core Concepts', link: '/core-concepts' },
                     { text: 'Architecture', link: '/architecture' },
                     { text: 'Benchmarks', link: '/benchmarks' },
-                    { text: 'Getting Started', link: '/getting-started' },
-                    { text: 'Docker', link: '/docker' },
+                    { text: 'Docker Containers', link: '/docker' },
                     { text: 'gRPC API', link: '/grpc-api' },
                 ]
             },
@@ -45,12 +47,14 @@ export default defineConfig({
                 text: 'Server',
                 items: [
                     { text: 'What is UmaDB?', link: '/what-is-umadb' },
+                    { text: 'Quick Start', link: '/quick-start' },
+                    { text: 'Install Guide', link: '/install' },
+                    { text: 'Using the CLI', link: '/cli' },
                     { text: 'Key Features', link: '/key-features' },
                     { text: 'Core Concepts', link: '/core-concepts' },
                     { text: 'Architecture', link: '/architecture' },
                     { text: 'Benchmarks', link: '/benchmarks' },
-                    { text: 'Getting Started', link: '/getting-started' },
-                    { text: 'Docker', link: '/docker' },
+                    { text: 'Docker Containers', link: '/docker' },
                     { text: 'gRPC API', link: '/grpc-api' },
                 ]
             },
