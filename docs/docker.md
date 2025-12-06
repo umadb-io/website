@@ -11,11 +11,11 @@ head:
 
 ## Multi-Platform Images
 
-Images are available from both:
-* [GitHub Container Registry](https://github.com/umadb-io/umadb/pkgs/container/umadb), and
-* [Docker Hub](https://hub.docker.com/r/umadb/umadb).
-
 UmaDB publishes multi-platform Docker images for `linux/amd64` and `linux/arm64`.
+
+UmaDB Docker images are available from:
+* [Docker Hub](https://hub.docker.com/r/umadb/umadb)
+* [GitHub Container Registry](https://github.com/umadb-io/umadb/pkgs/container/umadb)
 
 Each image is built from the Docker `scratch` base image and contains a copy of
 the same statically linked Linux (musl) binaries distributed in GitHub Releases.

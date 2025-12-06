@@ -8,7 +8,7 @@ head:
       content: UmaDB, binary, download, downloads, install, linux, macOS, Cargo 
 ---
 
-# Using the Command Line Interface
+# Using the CLI
 
 ## Options
 

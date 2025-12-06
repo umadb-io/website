@@ -9,21 +9,20 @@ head:
 ---
 # gRPC API
 
-## Health and DCB 
+## gRPC Services
 
 You can interact with an UmaDB server using its **gRPC API**. The server implements the following services:
 
 * [`grpc.health.v1.Health`](https://github.com/grpc/grpc/blob/master/doc/health-checking.md) — for checking server **health**.
-* [`UmaDBService`](#umadb-service) — for **reading and appending** DCB events.
+* [`umadb.v1.DCB`](#dcb-service) — for **reading and appending** DCB events.
 
-The following sections detail the protocol defined in
-[`umadb.proto`](https://github.com/umadb-io/umadb/blob/main/umadb-proto/umadb.proto).
+## UmaDB DCB Service
 
-## UmaDB Service
+The following sections detail the `umadb.v1.DCB` protocol defined in
+[`umadb.proto`](https://github.com/umadb-io/umadb/blob/main/umadb-proto/proto/v1/umadb.proto).
 
-The `UmaDBService` is the main gRPC service for reading and appending DCB events.
 
-The `UmaDBService` has three RPCs:
+This is UmaDB's gRPC service for reading and appending events. It has three RPCs:
 
 - [`Read`](#rpcs) — get events from the event store.
 - [`Append`](#rpcs) — write events to the event store.
@@ -53,16 +52,10 @@ Send a `ReadRequest` message to the [`Read`](#rpcs) RPC to read events from the 
 
 The server will return a stream of [`ReadResponse`](#read-response) messages.
 
-When `subscribe = false`, multiple `ReadResponse` messages may be streamed, but the stream will end when the "head"
-position (when the read request was received) is reached.
+When `subscribe` is `false`, multiple `ReadResponse` messages may be streamed, but the stream will end when
+the last recorded event when the read request was received is reached.
 
-When `subscribe = true`, the stream will continue as new events are appended to the store.
-
-When `subscribe = true`, the value of [`ReadResponse.head`](#read-response) will be empty.
-
-When `limit` is empty, the value of  [`ReadResponse.head`](#read-response) will be the position of the last recorded event in the database,
-otherwise it will be the position of the last selected event.
-
+When `subscribe` is `true`, the stream will continue as new events are appended to the store.
 
 ## Query
 
@@ -98,16 +91,22 @@ are mentioned in the `QueryItem`'s `tags` or if the `tags` field is empty.
 
 ## Read Response 
 
-The server returns a stream of `ReadResponse` messages in response to each [`ReadRequest`](#read-request)
-message sent by clients to the [`Read`](#rpcs) RPC.
+A stream of `ReadResponse` messages are sent in response to each [`ReadRequest`](#read-request).
+A collection of [`SequencedEvent`](#sequenced-event) messages can be obtained from the `events` field.
 
-A `ReadResponse` message has a collection of [`SequencedEvent`](#sequenced-event) messages.
 
-| Field    | Type                                                   | Description                                                      |
-|----------|--------------------------------------------------------|------------------------------------------------------------------|
-| `events` | **repeated**&nbsp;[`SequencedEvent`](#sequenced-event) | A batch of events matching the query.                            |
-| `head`   | **optional**&nbsp;`uint64`                             | The current head position of the store when this batch was sent. |
+| Field    | Type                                                   | Description                                                          |
+|----------|--------------------------------------------------------|----------------------------------------------------------------------|
+| `events` | **repeated**&nbsp;[`SequencedEvent`](#sequenced-event) | A batch of events matching the [`ReadRequest.query`](#read-request). |
+| `head`   | **optional**&nbsp;`uint64`                             | The position of the last recorded event.                             |
 
+When [`ReadRequest.subscribe`](#read-request) was `false` and [`ReadRequest.limit`](#read-request) was `None`, 
+the value of  `head` will be the position of the last recorded event in the database during the reader transaction.
+
+Otherwise, if [`ReadRequest.subscribe`](#read-request) was `true`, the value of `head` will be empty.
+
+Otherwise, if [`ReadRequest.limit`](#read-request) was a `uint64`, the value of `head` will be the position
+of the last event in the message's `events` field.
 
 ## Sequenced Event
 
@@ -157,26 +156,30 @@ the `error_type`.
 
 ## Append Condition
 
-The `AppendCondition` message causes an append to fail if any events matching a given [`Query`](#query) have
-been recorded after a given position.
+The `AppendCondition` message causes an append request to fail if any conflicting events matching a given [`Query`](#query)
+have been recorded after the "last known position".
 
-| Field                  | Type                                | Description                                                     |
-|------------------------|-------------------------------------|-----------------------------------------------------------------|
-| `fail_if_events_match` | **optional**&nbsp;[`Query`](#query) | Prevents append if any events matching the query already exist. |
-| `after`                | **optional**&nbsp;`uint64`          | Only match events sequenced after this position.                |
+| Field                  | Type                                | Description                   |
+|------------------------|-------------------------------------|-------------------------------|
+| `fail_if_events_match` | **optional**&nbsp;[`Query`](#query) | Query for conflicting events. |
+| `after`                | **optional**&nbsp;`uint64`          | The "last known position".    |
 
-Used by [`AppendRequest`](#append-request) messages to define a consistency boundary.
+Used by [`AppendRequest`](#append-request) messages to define optimistic concurrent control.
+
+A command handler that reads and writes events can define a dynamic consistency boundary for its operation by using
+the value of its [`ReadRequest.query`](#read-request) as the value of `fail_if_events_match`, and the received value of
+[`ReadResponse.head`](#read-response) as the value of `after`, when appending new events
 
 ## Append Response
 
-The server returns an `AppendResponse` message in response to each successful [`AppendRequest`](#append-request) message sent by clients to the [`Append`](#rpcs) RPC.
+The server returns an `AppendResponse` message for each successful [`AppendRequest`](#append-request).
 
 | Field      | Type     | Description                                 |
 |------------|----------|---------------------------------------------|
 | `position` | `uint64` | Sequence number of the last appended event. |
 
-With CQRS-style eventually consistent projections, clients can use the returned position to wait until downstream
-event processing components have become up-to-data.
+With CQRS-style eventually consistent projections, clients can use the returned `position` to wait until downstream
+event processing components have become up-to-date, avoiding out-of-date views being presented to users.
 
 ## Head Request
 
@@ -231,107 +234,3 @@ The `ErrorType` enum indicates UmaDB error types returned within an [`ErrorRespo
 | **Meta**        | [`HeadRequest`](#head-request), [`HeadResponse`](#head-response)                                                       | Retrieve current head position.     |
 | **Errors**      | [`ErrorResponse`](#error-response)                                                                                     | Consistent error representation.    |
 
-## Example
-
-Using the gRPC API directly in Python code might look something like this.
-
-```python
-from umadb_pb2 import (
-    Event,
-    QueryItem,
-    Query,
-    AppendCondition,
-    ReadRequest,
-    AppendRequest,
-)
-from umadb_pb2_grpc import UmaDBServiceStub
-import grpc
-
-# Connect to the gRPC server
-channel = grpc.insecure_channel("127.0.0.1:50051")
-client = UmaDBServiceStub(channel)
-
-# Define a consistency boundary
-cb = Query(
-    items=[
-        QueryItem(
-            types=["example"],
-            tags=["tag1", "tag2"],
-        )
-    ]
-)
-
-# Read events for a decision model
-read_request = ReadRequest(
-    query=cb,
-    start=None,
-    backwards=False,
-    limit=None,
-    subscribe=False,
-    batch_size=None,
-)
-read_stream = client.Read(read_request)
-
-# Build decision model
-last_head = None
-for read_response in read_stream:
-    for sequenced_event in read_response.events:
-        print(
-            f"Got event at position {sequenced_event.position}: {sequenced_event.event}"
-        )
-    last_head = read_response.head
-
-print("Last known position is:", last_head)
-
-# Produce new event
-event = Event(
-    event_type="example",
-    tags=["tag1", "tag2"],
-    data=b"Hello, world!",
-)
-
-# Append event in consistency boundary
-append_request = AppendRequest(
-    events=[event],
-    condition=AppendCondition(
-        fail_if_events_match=cb,
-        after=last_head,
-    ),
-)
-commit_response = client.Append(append_request)
-commit_position = commit_response.position
-print("Appended event at position:", commit_position)
-
-# Append conflicting event - expect an error
-conflicting_request = AppendRequest(
-    events=[event],
-    condition=AppendCondition(
-        fail_if_events_match=cb,
-        after=last_head,
-    ),
-)
-try:
-    conflicting_response = client.Append(conflicting_request)
-    # If no exception, this is unexpected
-    raise RuntimeError("Expected IntegrityError but append succeeded")
-except grpc.RpcError as e:
-    # Translate gRPC error codes to logical DCB errors if desired
-    if e.code() == grpc.StatusCode.FAILED_PRECONDITION:
-        print("Error appending conflicting event:", e.details())
-    else:
-        raise
-
-# Subscribe to all events for a projection
-subscription_request = ReadRequest()
-
-subscription_stream = client.Read(subscription_request)
-
-# Build an up-to-date view
-for read_response in subscription_stream:
-    for ev in read_response.events:
-        print(f"Processing event at {ev.position}: {ev.event}")
-        if ev.position == commit_position:
-            print("Projection has processed new event!")
-            break
-
-```
