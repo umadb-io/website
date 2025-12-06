@@ -55,18 +55,18 @@ continue as new events are appended to the store. Otherwise the stream will end 
 
 ## Query
 
-The `Query` message defines a filter for selecting events by types and tags.
+The `Query` message defines criteria for selecting events by types and tags.
 
-Used in [`ReadRequest`](#read-request) messages to filter the events returned by the server.
+Used in [`ReadRequest`](#read-request) messages to select events returned by the server.
 
-Used in [`AppendCondition`](#append-condition) messages to define a consistency boundary.
+Used in [`AppendCondition`](#append-condition) messages to select conflicting events.
 
 
-| Field   | Type                                         | Description                           |
-|---------|----------------------------------------------|---------------------------------------|
-| `items` | **repeated**&nbsp;[`QueryItem`](#query-item) | A list of query clauses (logical OR). |
+| Field   | Type                                         | Description                                |
+|---------|----------------------------------------------|--------------------------------------------|
+| `items` | **repeated**&nbsp;[`QueryItem`](#query-item) | A list of selection criteria (logical OR). |
 
-Events will match if any of the [`QueryItem`](#query-item) clauses match.
+An event will be selected if any of the [`QueryItem`](#query-item) criteria match.
 
 If the `items` list is empty, all events will match.
 
@@ -81,9 +81,9 @@ Used in [`Query`](#query) messages to detail which tags and types to match.
 | `types` | **repeated**&nbsp;`string` | List of event types (logical OR). |
 | `tags`  | **repeated**&nbsp;`string` | List of tags (logical AND).       |
 
-An [`Event`](#event) in the event store will match a `QueryItem` if both: the [`Event.type`](#event) is mentioned in the
-`QueryItem`'s `types` or if the `types` field is empty; and if all the [`Event.tags`](#event)
-are mentioned in the `QueryItem`'s `tags` or if the `tags` field is empty.
+An [`Event`](#event) in the event store will match a `QueryItem` if: any of `QueryItem`'s `types`
+matches the [`Event.type`](#event) or if the `types` field is empty; and if each the `QueryItem`'s `tags`
+match one of the [`Event.tags`](#event) or if the `tags` field is empty.
 
 ## Read Response
 
