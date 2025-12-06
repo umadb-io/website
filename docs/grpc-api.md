@@ -92,9 +92,9 @@ Used in [`Query`](#query) messages to detail which tags and types to match.
 | `types` | **repeated**&nbsp;`string` | List of event types (logical OR). |
 | `tags`  | **repeated**&nbsp;`string` | List of tags (logical AND).       |
 
-An [`Event`](#event) in the event store will match a query item if both: the [`Event.type`](#event) is mentioned in the
-query item's `types` or if the query item's `types` is empty; and if all the [`Event.tags`](#)
-are mentioned in the query item's `tags` or if the query items's `tags` is .
+An [`Event`](#event) in the event store will match a `QueryItem` if both: the [`Event.type`](#event) is mentioned in the
+`QueryItem`'s `types` or if the `types` field is empty; and if all the [`Event.tags`](#)
+are mentioned in the `QueryItem`'s `tags` or if the `tags` field is empty.
 
 ## Read Response 
 
