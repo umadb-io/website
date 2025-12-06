@@ -16,7 +16,7 @@ You can interact with an UmaDB server using its **gRPC API**. The server impleme
 * [`grpc.health.v1.Health`](https://github.com/grpc/grpc/blob/master/doc/health-checking.md) — for checking server **health**.
 * [`umadb.v1.DCB`](#dcb-service) — for **reading and appending** DCB events.
 
-## UmaDB DCB Service
+## DCB Service
 
 The following sections detail the `umadb.v1.DCB` protocol defined in
 [`umadb.proto`](https://github.com/umadb-io/umadb/blob/main/umadb-proto/proto/v1/umadb.proto).
@@ -50,12 +50,8 @@ Send a `ReadRequest` message to the [`Read`](#rpcs) RPC to read events from the 
 | `subscribe`  | **optional**&nbsp;`bool`            | If true, the stream remains open and continues delivering new events. |
 | `batch_size` | **optional**&nbsp;`uint32`          | Optional batch size hint for streaming responses.                     |
 
-The server will return a stream of [`ReadResponse`](#read-response) messages.
-
-When `subscribe` is `false`, multiple `ReadResponse` messages may be streamed, but the stream will end when
-the last recorded event when the read request was received is reached.
-
-When `subscribe` is `true`, the stream will continue as new events are appended to the store.
+The server will return a stream of [`ReadResponse`](#read-response) messages. When `subscribe` is `true`, the stream will
+continue as new events are appended to the store. Otherwise the stream will end when the last recorded event is reached.
 
 ## Query
 
@@ -86,10 +82,10 @@ Used in [`Query`](#query) messages to detail which tags and types to match.
 | `tags`  | **repeated**&nbsp;`string` | List of tags (logical AND).       |
 
 An [`Event`](#event) in the event store will match a `QueryItem` if both: the [`Event.type`](#event) is mentioned in the
-`QueryItem`'s `types` or if the `types` field is empty; and if all the [`Event.tags`](#)
+`QueryItem`'s `types` or if the `types` field is empty; and if all the [`Event.tags`](#event)
 are mentioned in the `QueryItem`'s `tags` or if the `tags` field is empty.
 
-## Read Response 
+## Read Response
 
 A stream of `ReadResponse` messages are sent in response to each [`ReadRequest`](#read-request).
 A collection of [`SequencedEvent`](#sequenced-event) messages can be obtained from the `events` field.
@@ -117,7 +113,7 @@ The `SequencedEvent` message represents a recorded [`Event`](#event) along with 
 | `position` | `uint64`          | Monotonically increasing event position in the global log. |
 | `event`    | [`Event`](#event) | The underlying event payload.                              |
 
-Used in [`ReadResponse`](#read-response) messages.
+Included in [`ReadResponse`](#read-response) messages when responding to read requests.
 
 ## Event
 
@@ -130,9 +126,11 @@ The `Event` message represents a single event in the event store.
 | `data`       | `bytes`                    | Serialized event data (e.g. JSON, CBOR, or binary payload).      |
 | `uuid`       | `string`                   | Serialized event UUID (e.g. A version 4 UUIDv4).                 |
 
-Used by [`SequencedEvent`](#sequenced-event) messages when responding to read requests.
+Included in [`SequencedEvent`](#sequenced-event) messages when responding to read requests.
 
-Used by [`AppendRequest`](#append-request) message when writing new events to the store.
+Included in [`AppendRequest`](#append-request) message when writing new events to the store.
+
+Selected by [`QueryItem`](#query-item) messages.
 
 
 ## Append Request
@@ -144,9 +142,9 @@ the [`AppendCondition`](#append-condition) given in the `condition` field fails.
 | Field       | Type                                                     | Description                                                                |
 |-------------|----------------------------------------------------------|----------------------------------------------------------------------------|
 | `events`    | **repeated**&nbsp;[`Event`](#event)                      | Events to append, in order.                                                |
-| `condition` | **optional**&nbsp;[`AppendCondition`](#append-condition) | Optional condition to enforce optimistic concurrency or prevent conflicts. |
+| `condition` | **optional**&nbsp;[`AppendCondition`](#append-condition) | Optional condition to enforce optimistic concurrency and detect conflicts. |
 
-If the `condition` does not fail, the server will return an [`AppendResponse`](#append-response) message. 
+The server will return an [`AppendResponse`](#append-response) message if the `condition` does not fail.
 
 If the append condition fails, the server will return a gRPC error response with gRPC status `FAILED_PRECONDITION`
 and a human-readable message string.  In addition, the gRPC status details attribute will have a serialised
@@ -164,7 +162,7 @@ have been recorded after the "last known position".
 | `fail_if_events_match` | **optional**&nbsp;[`Query`](#query) | Query for conflicting events. |
 | `after`                | **optional**&nbsp;`uint64`          | The "last known position".    |
 
-Used by [`AppendRequest`](#append-request) messages to define optimistic concurrent control.
+Used in [`AppendRequest`](#append-request) messages to define optimistic concurrent control.
 
 A command handler that reads and writes events can define a dynamic consistency boundary for its operation by using
 the value of its [`ReadRequest.query`](#read-request) as the value of `fail_if_events_match`, and the received value of
