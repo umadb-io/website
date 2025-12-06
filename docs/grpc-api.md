@@ -9,25 +9,25 @@ head:
 ---
 # gRPC API
 
-## Services
+## Health and DCB 
 
 You can interact with an UmaDB server using its **gRPC API**. The server implements the following services:
 
-* [`UmaDBService`](#umadb-service) Main service for reading and appending events.
-* [`grpc.health.v1.Health`](https://github.com/grpc/grpc/blob/master/doc/health-checking.md) Service for checking server health.
+* [`grpc.health.v1.Health`](https://github.com/grpc/grpc/blob/master/doc/health-checking.md) — for checking server **health**.
+* [`UmaDBService`](#umadb-service) — for **reading and appending** DCB events.
 
-The following sections detail the [`UmaDBService`](#umadb-service) protocol defined in
+The following sections detail the protocol defined in
 [`umadb.proto`](https://github.com/umadb-io/umadb/blob/main/umadb-proto/umadb.proto).
 
 ## UmaDB Service
 
-The `UmaDBService` is the main gRPC service for reading and appending events.
+The `UmaDBService` is the main gRPC service for reading and appending DCB events.
 
-It has three RPCs:
+The `UmaDBService` has three RPCs:
 
-- [`Read`](#rpcs) Get events from the event store
-- [`Append`](#rpcs) Write events to the event store
-- [`Head`](#rpcs) Get the sequence number of the last recorded event
+- [`Read`](#rpcs) — get events from the event store.
+- [`Append`](#rpcs) — write events to the event store.
+- [`Head`](#rpcs) — position of the last recorded event.
 
 ### RPCs
 
@@ -138,8 +138,7 @@ Used by [`AppendRequest`](#append-request) message when writing new events to th
 
 ## Append Request
 
-Send a `AppendRequest` message to the [`Append`](#rpcs) RPC to append new events to the event store.
-
+Send a `AppendRequest` message to the [`Append`](#rpcs) RPC to append new events.
 All the [`Event`](#event) messages in the `events` field will be appended atomically in order, unless
 the [`AppendCondition`](#append-condition) given in the `condition` field fails.
 
@@ -154,12 +153,6 @@ If the append condition fails, the server will return a gRPC error response with
 and a human-readable message string.  In addition, the gRPC status details attribute will have a serialised
 [`ErrorResponse`](#error-response) message, that has the same human-readable message string and [`INTEGRITY`](#error-type) as
 the `error_type`.
-
-If an operation fails, the server will return a gRPC error response with a suitable gRPC status code
-and a human-readable message string. In addition, the gRPC status details attribute will have a serialised
-`ErrorResponse` message that has the same human-readable message string, and an `error_type`
-set to a appropriate [`ErrorType`](#error-type), which can be unpacked and converted into a client
-error.
 
 
 ## Append Condition
@@ -213,8 +206,7 @@ The `ErrorResponse` message is used to return errors from the gRPC API.
 If an operation fails, the server will return a gRPC error response with a suitable gRPC status code
 and a human-readable message string. In addition, the gRPC status details attribute will have a serialised
 `ErrorResponse` message that has the same human-readable message string, and an `error_type`
-set to a appropriate [`ErrorType`](#error-type), which can be unpacked and converted into a client
-error.
+set to a appropriate [`ErrorType`](#error-type).
 
 ## Error Type
 
