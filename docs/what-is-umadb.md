@@ -5,7 +5,7 @@ head:
       content: High-performance event store for Dynamic Consistency Boundaries
   - - meta
     - name: keywords
-      content: UmaDB, event store, DCB, append-only, real-time, event-driven, database
+      content: UmaDB, event store, DCB, append-only, real-time, event sourcing, event-driven, database
 ---
 
 ![UmaDB logo](/images/UmaDB-brand-figure-torso-and-lettering.png)
@@ -15,7 +15,7 @@ head:
 
 UmaDB is a specialist open-source event store built for Dynamic Consistency Boundaries.
 
-UmaDB supports event-driven architectures where consistency rules can adapt dynamically to
+UmaDB supports event sourcing and event-driven architectures where consistency rules can adapt dynamically to
 business needs, rather than being hardwired into the database.
 
 UmaDB directly implements the [independent specification](https://dcb.events/specification/) for
