@@ -11,12 +11,12 @@ head:
 
 ## gRPC Services
 
-You can interact with an UmaDB server using its **gRPC API**. The server implements the following services:
+You can interact with an UmaDB server using its **gRPC API**.
 
-* [`grpc.health.v1.Health`](https://github.com/grpc/grpc/blob/master/doc/health-checking.md) — for checking server **health**.
+* [`grpc.health.v1.Health`](https://github.com/grpc/grpc/blob/master/doc/health-checking.md) — for checking **server health**.
 * [`umadb.v1.DCB`](#dcb-service) — for **reading and appending** DCB events.
 
-The following sections detail the `umadb.v1.DCB` protocol defined in
+The sections below detail the `umadb.v1.DCB` protocol defined in
 [`umadb.proto`](https://github.com/umadb-io/umadb/blob/main/umadb-proto/proto/v1/umadb.proto).
 
 
@@ -86,7 +86,7 @@ A `QueryItem` will match an [`Event`](#event) if:
 * all of the `tags` match one of the [`Event.tags`](#event) or the `tags` field is empty.
 
 Include in:
-* [`Query`](#query) messages to define which events to select.
+* [`Query`](#query) to define which events to select.
 
 ## Read Response
 
@@ -117,7 +117,7 @@ A `SequencedEvent` message represents a recorded [`Event`](#event) along with it
 | `event`    | [`Event`](#event) | The underlying event payload.                              |
 
 Included in:
-* [`ReadResponse`](#read-response) messages when the server responds to read requests.
+* [`ReadResponse`](#read-response) when the server responds to read requests.
 
 ## Event
 
@@ -142,7 +142,7 @@ Matched by:
 
 ## Append Request
 
-Send a `AppendRequest` message to the [`Append`](#rpcs) RPC to append new events.
+Send an `AppendRequest` message to the [`Append`](#rpcs) RPC to append new events.
 All the [`Event`](#event) messages in the `events` field will be appended atomically in order, unless
 the [`AppendCondition`](#append-condition) given in the `condition` field fails.
 

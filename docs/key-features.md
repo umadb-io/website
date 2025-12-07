@@ -13,7 +13,7 @@ head:
 
 UmaDB is designed to be directly consistent with the [specification for DCB](https://dcb.events/specification/).
 
-The API is simple and intuitive, and has been tested and approved by the DCB team.
+The [API](./grpc-api) is simple and intuitive, and has been tested and approved by the DCB team.
 
 UmaDB has one method for reading events, and one method for writing events.
 
