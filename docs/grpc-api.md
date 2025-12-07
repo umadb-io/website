@@ -16,10 +16,11 @@ You can interact with an UmaDB server using its **gRPC API**. The server impleme
 * [`grpc.health.v1.Health`](https://github.com/grpc/grpc/blob/master/doc/health-checking.md) — for checking server **health**.
 * [`umadb.v1.DCB`](#dcb-service) — for **reading and appending** DCB events.
 
-## DCB Service
-
 The following sections detail the `umadb.v1.DCB` protocol defined in
 [`umadb.proto`](https://github.com/umadb-io/umadb/blob/main/umadb-proto/proto/v1/umadb.proto).
+
+
+## DCB Service
 
 
 This is UmaDB's gRPC service for reading and appending events. It has three RPCs:
@@ -41,49 +42,51 @@ This is UmaDB's gRPC service for reading and appending events. It has three RPCs
 
 Send a `ReadRequest` message to the [`Read`](#rpcs) RPC to read events from the event store.
 
+Set `query` to select only specific events. Set `start` to read only from a specific position. If `start` is not set,
+events will be read from the first recorded event, or the last if `backwards` is `true`.
+
 | Field        | Type                                | Description                                                           |
 |--------------|-------------------------------------|-----------------------------------------------------------------------|
 | `query`      | **optional**&nbsp;[`Query`](#query) | Optional filter for selecting specific event types or tags.           |
 | `start`      | **optional**&nbsp;`uint64`          | Read from this sequence number.                                       |
-| `backwards`  | **optional**&nbsp;`bool`            | Start reading backwards.                                              |
-| `limit`      | **optional**&nbsp;`uint32`          | Maximum number of events to return.                                   |
+| `backwards`  | **optional**&nbsp;`bool`            | Start reading backwards (default `false`).                            |
+| `limit`      | **optional**&nbsp;`uint32`          | Maximum number of events to return (default unlimited).               |
 | `subscribe`  | **optional**&nbsp;`bool`            | If true, the stream remains open and continues delivering new events. |
 | `batch_size` | **optional**&nbsp;`uint32`          | Optional batch size hint for streaming responses.                     |
 
-The server will return a stream of [`ReadResponse`](#read-response) messages. When `subscribe` is `true`, the stream will
-continue as new events are appended to the store. Otherwise the stream will end when the last recorded event is reached.
+The server will return a stream of [`ReadResponse`](#read-response) messages. The default value of `subscribe` is
+`false`, meaning the stream will end when all selected events have been received. When `subscribe` is `true`, the stream
+will continue as new events are appended to the store.
 
 ## Query
 
-The `Query` message defines criteria for selecting events by types and tags.
-
-Used in [`ReadRequest`](#read-request) messages to select events returned by the server.
-
-Used in [`AppendCondition`](#append-condition) messages to select conflicting events.
-
+A `Query` message defines criteria for selecting events in the event store.
 
 | Field   | Type                                         | Description                                |
 |---------|----------------------------------------------|--------------------------------------------|
 | `items` | **repeated**&nbsp;[`QueryItem`](#query-item) | A list of selection criteria (logical OR). |
 
-An event will be selected if any of the [`QueryItem`](#query-item) criteria match.
+An [`Event`](#event) is selected if any [`QueryItem`](#query-item) matches or the `items` field is empty.
 
-If the `items` list is empty, all events will match.
+Include in:
+* [`ReadRequest`](#read-request) to select events returned by the server.
+* [`AppendCondition`](#append-condition) to select conflicting events.
 
 ## Query Item
 
-The `QueryItem` message represents a **query clause** that matches a subset of events.
-
-Used in [`Query`](#query) messages to detail which tags and types to match.
+A `QueryItem` message defines a criterion for matching events.
 
 | Field   | Type                       | Description                       |
 |---------|----------------------------|-----------------------------------|
 | `types` | **repeated**&nbsp;`string` | List of event types (logical OR). |
 | `tags`  | **repeated**&nbsp;`string` | List of tags (logical AND).       |
 
-An [`Event`](#event) in the event store will match a `QueryItem` if: any of `QueryItem`'s `types`
-matches the [`Event.type`](#event) or if the `types` field is empty; and if each the `QueryItem`'s `tags`
-match one of the [`Event.tags`](#event) or if the `tags` field is empty.
+A `QueryItem` will match an [`Event`](#event) if:
+* one of the `types` matches the [`Event.type`](#event) or the `types` field is empty; AND
+* all of the `tags` match one of the [`Event.tags`](#event) or the `tags` field is empty.
+
+Include in:
+* [`Query`](#query) messages to define which events to select.
 
 ## Read Response
 
@@ -106,18 +109,19 @@ of the last event in the message's `events` field.
 
 ## Sequenced Event
 
-The `SequencedEvent` message represents a recorded [`Event`](#event) along with its assigned sequence number.
+A `SequencedEvent` message represents a recorded [`Event`](#event) along with its assigned sequence number.
 
 | Field      | Type              | Description                                                |
 |------------|-------------------|------------------------------------------------------------|
 | `position` | `uint64`          | Monotonically increasing event position in the global log. |
 | `event`    | [`Event`](#event) | The underlying event payload.                              |
 
-Included in [`ReadResponse`](#read-response) messages when responding to read requests.
+Included in:
+* [`ReadResponse`](#read-response) messages when the server responds to read requests.
 
 ## Event
 
-The `Event` message represents a single event in the event store.
+An `Event` message represents a single event in the event store.
 
 | Field        | Type                       | Description                                                      |
 |--------------|----------------------------|------------------------------------------------------------------|
@@ -126,11 +130,14 @@ The `Event` message represents a single event in the event store.
 | `data`       | `bytes`                    | Serialized event data (e.g. JSON, CBOR, or binary payload).      |
 | `uuid`       | `string`                   | Serialized event UUID (e.g. A version 4 UUIDv4).                 |
 
-Included in [`SequencedEvent`](#sequenced-event) messages when responding to read requests.
+Include in:
+* [`AppendRequest`](#append-request) when writing new events to the store.
 
-Included in [`AppendRequest`](#append-request) message when writing new events to the store.
+Included in:
+* [`SequencedEvent`](#sequenced-event) when the server responds to read requests.
 
-Selected by [`QueryItem`](#query-item) messages.
+Matched by:
+* [`QueryItem`](#query-item) during [`Read`](#rpcs) and [`Append`](#rpcs) operations. 
 
 
 ## Append Request
@@ -154,19 +161,20 @@ the `error_type`.
 
 ## Append Condition
 
-The `AppendCondition` message causes an append request to fail if any conflicting events matching a given [`Query`](#query)
-have been recorded after the "last known position".
+An `AppendCondition` message causes an append request to fail if events match, optionally after
+the "last known position".
 
 | Field                  | Type                                | Description                   |
 |------------------------|-------------------------------------|-------------------------------|
 | `fail_if_events_match` | **optional**&nbsp;[`Query`](#query) | Query for conflicting events. |
 | `after`                | **optional**&nbsp;`uint64`          | The "last known position".    |
 
-Used in [`AppendRequest`](#append-request) messages to define optimistic concurrent control.
+Include in:
+* [`AppendRequest`](#append-request) to define optimistic concurrent control.
 
-A command handler that reads and writes events can define a dynamic consistency boundary for its operation by using
-the value of its [`ReadRequest.query`](#read-request) as the value of `fail_if_events_match`, and the received value of
-[`ReadResponse.head`](#read-response) as the value of `after`, when appending new events
+Command handlers can use the given value of [`ReadRequest.query`](#read-request) as the value of `fail_if_events_match`, and the
+received value of [`ReadResponse.head`](#read-response) as the value of `after`, when appending new events generated
+by a decision model.
 
 ## Append Response
 
@@ -176,7 +184,7 @@ The server returns an `AppendResponse` message for each successful [`AppendReque
 |------------|----------|---------------------------------------------|
 | `position` | `uint64` | Sequence number of the last appended event. |
 
-With CQRS-style eventually consistent projections, clients can use the returned `position` to wait until downstream
+Clients can use the returned `position` to wait until downstream
 event processing components have become up-to-date, avoiding out-of-date views being presented to users.
 
 ## Head Request
