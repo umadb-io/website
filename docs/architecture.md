@@ -16,13 +16,13 @@ event store. Each layer has a clear responsibility, from client communication at
 at the bottom. Requests typically flow *down* the stack, from client calls through the API and core logic into the
 storage and persistence layers, while query results and acknowledgements flow *back up* the same path.
 
-| **Layer**             | **Component**           | **Responsibility**                                                    |
-|-----------------------|-------------------------|-----------------------------------------------------------------------|
-| **Client Layer**      | gRPC Clients            | Provides application-facing interfaces for reading and writing events |
-| **API Layer**         | gRPC Server             | Defines the public API surface (gRPC service)                         |
-| **Logic Layer**       | UmaDB Core              | Implements transaction logic, batching, and concurrency control       |
-| **Storage Layer**     | B+ Trees                | Indexes events, tags, and free pages for efficient lookups            |
-| **Persistence Layer** | Pager and File System   | Durable paged file I/O                                                |
+| **Layer**         | **Component**           | **Responsibility**                                                    |
+|-------------------|-------------------------|-----------------------------------------------------------------------|
+| **Client**        | gRPC Clients            | Provides application-facing interfaces for reading and writing events |
+| **API**           | gRPC Server             | Defines the public API surface (gRPC service)                         |
+| **Logic**         | UmaDB Core              | Implements transaction logic, batching, and concurrency control       |
+| **Storage**       | B+ Trees                | Indexes events, tags, and free pages for efficient lookups            |
+| **Persistence**   | Pager and File System   | Durable paged file I/O                                                |
 
 ## Data Flow Summary
 
