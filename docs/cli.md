@@ -22,8 +22,8 @@ umadb --listen 127.0.0.1:50051 --db-path ./uma.db
 
 - `--listen`:  Address to bind to (e.g. `127.0.0.1:50051`)
 - `--db-path`: Path to the database file or directory
-- `--tls-cert`: TLS server certificate (PEM), optional
-- `--tls-key`: TLS server private key (PEM), optional
+- `--tls-cert`: Path to TLS server certificate (PEM), optional
+- `--tls-key`: Path to TLS server private key (PEM), optional
 - `--api-key`: API key for authenticating clients, optional
 - `-h, --help`: Show help information
 - `-V, --version`: Show version information
