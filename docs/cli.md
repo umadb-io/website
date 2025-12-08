@@ -28,7 +28,7 @@ umadb --listen 127.0.0.1:50051 --db-path ./uma.db
 - `-h, --help`: Show help information
 - `-V, --version`: Show version information
 
-The TLS options can also be provided using environment variables:
+The TLS and API key options can also be provided using environment variables:
 * `UMADB_TLS_CERT` — Path to the server TLS certificate (PEM), equivalent to `--tls-cert`
 * `UMADB_TLS_KEY` — Path to the server TLS private key (PEM), equivalent to `--tls-key`
 * `UMADB_API_KEY` — API key for authenticating clients, equivalent to `--api-key`
