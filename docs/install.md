@@ -2,7 +2,7 @@
 head:
   - - meta
     - name: description
-      content: Explains how to get started with UmaDB including downloading, installation and running the server.
+      content: How to install the UmaDB CLI.
   - - meta
     - name: keywords
       content: download, downloads, install, UmaDB, linux, macOS, Cargo 

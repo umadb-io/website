@@ -2,7 +2,7 @@
 head:
   - - meta
     - name: description
-      content: High-performance event store for Dynamic Consistency Boundaries
+      content: High-performance event store for Dynamic Consistency Boundaries.
   - - meta
     - name: keywords
       content: UmaDB, event store, DCB, append-only, real-time, event sourcing, event-driven, database

@@ -2,7 +2,7 @@
 head:
   - - meta
     - name: description
-      content: How to use UmaDB with Rust
+      content: How to use UmaDB with Rust.
   - - meta
     - name: keywords
       content: UmaDB, client, Rust

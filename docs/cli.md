@@ -2,7 +2,7 @@
 head:
   - - meta
     - name: description
-      content: Explains how to download and install UmaDB binary.
+      content: How to use the UmaDB CLI.
   - - meta
     - name: keywords
       content: UmaDB, binary, download, downloads, install, linux, macOS, Cargo 

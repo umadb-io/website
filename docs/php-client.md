@@ -2,7 +2,7 @@
 head:
   - - meta
     - name: description
-      content: How to use UmaDB with PHP
+      content: How to use UmaDB with PHP.
   - - meta
     - name: keywords
       content: UmaDB, client, PHP

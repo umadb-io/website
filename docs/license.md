@@ -2,7 +2,7 @@
 head:
   - - meta
     - name: description
-      content: Open source database management system
+      content: Open source database management system.
   - - meta
     - name: keywords
       content: UmaDB, license, MIT, Apache
