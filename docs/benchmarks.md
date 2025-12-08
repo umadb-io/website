@@ -2,7 +2,7 @@
 head:
   - - meta
     - name: description
-      content: Some benchmarks for UmaDB, read and writing with different loads and concurrency levels.
+      content: Some benchmarks for UmaDB, read and writing with different loads and concurrency levels
   - - meta
     - name: keywords
       content: UmaDB, benchmark, benchmark, performance, throughput, read, write, p50, p95 

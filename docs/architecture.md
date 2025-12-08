@@ -2,7 +2,7 @@
 head:
   - - meta
     - name: description
-      content: Explains how UmaDB works internally, detailing its specialist B+ trees and copy-on-write MVCC design.
+      content: Explains how UmaDB works internally, detailing its specialist B+ trees and copy-on-write MVCC design
   - - meta
     - name: keywords
       content: UmaDB, architecture, design, MVCC, B+ trees, copy-on-write 

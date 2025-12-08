@@ -2,7 +2,7 @@
 head:
   - - meta
     - name: description
-      content: How to get started with UmaDB Docker containers.
+      content: How to get started with UmaDB Docker containers
   - - meta
     - name: keywords
       content: UmaDB, Docker, download, downloads, linux, macOS 

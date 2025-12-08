@@ -2,7 +2,7 @@
 head:
   - - meta
     - name: description
-      content: How to use UmaDB with Rust.
+      content: How to use UmaDB with Rust
   - - meta
     - name: keywords
       content: UmaDB, client, Rust
@@ -234,8 +234,8 @@ async fn append(
 ```
 :::
 
-This method can be used to append new [`DCBEvent`](#event) to the store atomically, with optional optimistic
-concurrency conditions. Events are written in order. This method is idempotent for events that have UUIDs.
+This method can be used to append new [`DCBEvent`](#event) instances to UmaDB atomically, with optional optimistic
+concurrency control. Events are written in order. This method is idempotent for events that have UUIDs.
 
 ### Parameters
 
@@ -244,7 +244,7 @@ concurrency conditions. Events are written in order. This method is idempotent f
 | `events`    | `Vec<DCBEvent>`              | The list of events to append. Each includes an event type, tags, and data payload.   |
 | `condition` | `Option<DCBAppendCondition>` | Optional append condition (e.g. `After(u64)`) to ensure no conflicting writes occur. |
 
-Returns the **sequence number** (`u64`) of the last successfully appended event from this operation. This
+Returns the sequence number (`u64`) of the last successfully appended event from this operation. This
 value can be used to wait for downstream event-processing components in a CQRS system to become up-to-date.
 
 ## Query

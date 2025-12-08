@@ -2,7 +2,7 @@
 head:
   - - meta
     - name: description
-      content: Details the gRPC API for UmaDB.
+      content: Details the gRPC API for UmaDB
   - - meta
     - name: keywords
       content: UmaDB, gRPC, API

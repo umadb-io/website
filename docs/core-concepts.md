@@ -2,7 +2,7 @@
 head:
   - - meta
     - name: description
-      content: Explains the basic ideas behind UmaDB, including events, positions, tags, and queries.
+      content: Explains the basic ideas behind UmaDB, including events, positions, tags, and queries
   - - meta
     - name: keywords
       content: UmaDB, events, positions, tags, queries 

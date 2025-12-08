@@ -2,7 +2,7 @@
 head:
   - - meta
     - name: description
-      content: How to use the UmaDB CLI.
+      content: How to use the UmaDB CLI
   - - meta
     - name: keywords
       content: UmaDB, binary, download, downloads, install, linux, macOS, Cargo 
@@ -75,4 +75,3 @@ Explanation:
 * `-subj` "/CN=localhost" — sets the certificate’s Common Name (CN).
 * `-addext` "basicConstraints = CA:FALSE" — marks the cert as not a Certificate Authority.
 * `-addext` "subjectAltName = DNS:localhost" — adds a SAN entry, required by modern TLS clients.
-

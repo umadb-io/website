@@ -2,7 +2,7 @@
 head:
   - - meta
     - name: description
-      content: How to build the UmaDB server from source.
+      content: How to build the UmaDB server from source
   - - meta
     - name: keywords
       content: UmaDB, build, server, source, Cargo, Rust

@@ -2,7 +2,7 @@
 head:
   - - meta
     - name: description
-      content: How to install the UmaDB CLI.
+      content: How to install the UmaDB CLI
   - - meta
     - name: keywords
       content: download, downloads, install, UmaDB, linux, macOS, Cargo 
