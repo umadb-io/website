@@ -31,11 +31,11 @@ pub fn new(url: String) -> Self
 ```
 
 It must be called with a URL. It returns an instance of `UmaDBClient`. Optional configuration options
-can be set with chainable methods. Asynchronous and synchronous client instances can then be constructed from
+can be set with chainable methods. Asynchronous and synchronous client instances can then be constructed with
 the accumulated configuration.
 
-If the `url` argument has protocol `"https"` or `"grpcs"`, then a "secure" gRPC channel using TLS will be created.
-Otherwise, an "insecure" channel with TLS will be used.
+If the `url` has `"https"` or `"grpcs"` then a "secure" gRPC channel using TLS will be created.
+Otherwise, an "insecure" channel without TLS will be used.
 
 ### Optional Configuration
 
