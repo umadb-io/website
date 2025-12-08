@@ -24,12 +24,14 @@ umadb --listen 127.0.0.1:50051 --db-path ./uma.db
 - `--db-path`: Path to the database file or directory
 - `--tls-cert`: TLS server certificate (PEM), optional
 - `--tls-key`: TLS server private key (PEM), optional
+- `--api-key`: API key for authenticating clients, optional
 - `-h, --help`: Show help information
 - `-V, --version`: Show version information
 
 The TLS options can also be provided using environment variables:
 * `UMADB_TLS_CERT` — Path to the server TLS certificate (PEM), equivalent to `--tls-cert`
 * `UMADB_TLS_KEY` — Path to the server TLS private key (PEM), equivalent to `--tls-key`
+* `UMADB_API_KEY` — API key for authenticating clients, equivalent to `--api-key`
 
 ## Self-signed TLS Certificate
 
@@ -59,8 +61,13 @@ Explanation:
 * `-addext` "basicConstraints = CA:FALSE" — marks the cert as not a Certificate Authority.
 * `-addext` "subjectAltName = DNS:localhost" — adds a SAN entry, required by modern TLS clients.
 
-This one-liner will produce a valid self-signed server certificate usable by the Rust client examples below.
+## Example
 
 ```bash
-umadb --listen 127.0.0.1:50051 --db-path ./uma.db  --tls-cert server.pem --tls-key server.key
+umadb \
+  --listen 127.0.0.1:50051 \
+  --db-path ./uma.db  \
+  --tls-cert server.pem \
+  --tls-key server.key \
+  --api-key umadb:example-api-key-4f7c2b1d9e5f4a038c1a
 ```

@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress'
+import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
 
 export default defineConfig({
     title: 'UmaDB',
@@ -7,6 +8,11 @@ export default defineConfig({
         hostname: 'https://umadb.io'
     },
     lastUpdated: true,
+    markdown: {
+        config(md) {
+            md.use(tabsMarkdownPlugin)
+        },
+    },
     themeConfig: {
         logo: '/images/UmaDB-brand-lettering-small.png',
         siteTitle: "",

@@ -62,8 +62,8 @@ will continue as new events are appended to the store.
 
 A `Query` message defines criteria for selecting events in the event store.
 
-| Field   | Type                                         | Description                                |
-|---------|----------------------------------------------|--------------------------------------------|
+| Field   | Type                                 | Description                                |
+|---------|--------------------------------------|--------------------------------------------|
 | `items` | **repeated**&nbsp;[`QueryItem`](#query-item) | A list of selection criteria (logical OR). |
 
 An [`Event`](#event) is selected if any [`QueryItem`](#query-item) matches or the `items` field is empty.
@@ -82,8 +82,8 @@ A `QueryItem` message defines a criterion for matching events.
 | `tags`  | **repeated**&nbsp;`string` | List of tags (logical AND).       |
 
 A `QueryItem` will match an [`Event`](#event) if:
-* one of the `types` matches the [`Event.type`](#event) or the `types` field is empty; AND
-* all of the `tags` match one of the [`Event.tags`](#event) or the `tags` field is empty.
+* one of its `types` matches the [`Event.type`](#event) or its `types` field is empty; AND
+* all of its `tags` match one of the [`Event.tags`](#event) or its `tags` field is empty.
 
 Include in:
 * [`Query`](#query) to define which events to select.
@@ -111,24 +111,26 @@ of the last event in the message's `events` field.
 
 A `SequencedEvent` message represents a recorded [`Event`](#event) along with its assigned sequence number.
 
-| Field      | Type              | Description                                                |
-|------------|-------------------|------------------------------------------------------------|
-| `position` | `uint64`          | Monotonically increasing event position in the global log. |
-| `event`    | [`Event`](#event) | The underlying event payload.                              |
+| Field      | Type              | Description          |
+|------------|-------------------|----------------------|
+| `position` | `uint64`          | The sequence number. |
+| `event`    | [`Event`](#event) | The recorded event.  |
 
 Included in:
 * [`ReadResponse`](#read-response) when the server responds to read requests.
 
 ## Event
 
-An `Event` message represents a single event in the event store.
+An `Event` represents a single event either to be appended or already stored in the event log.
 
-| Field        | Type                       | Description                                                      |
-|--------------|----------------------------|------------------------------------------------------------------|
-| `event_type` | `string`                   | The logical type or name of the event (e.g. `"UserRegistered"`). |
-| `tags`       | **repeated**&nbsp;`string` | Tags associated with the event for query matching and indexing.  |
-| `data`       | `bytes`                    | Serialized event data (e.g. JSON, CBOR, or binary payload).      |
-| `uuid`       | `string`                   | Serialized event UUID (e.g. A version 4 UUIDv4).                 |
+| Field        | Type                       | Description                                                   |
+|--------------|----------------------------|---------------------------------------------------------------|
+| `event_type` | `string`                   | The event’s logical type (e.g. `"UserRegistered"`).           |
+| `tags`       | **repeated**&nbsp;`string` | Tags assigned to the event (used for filtering and indexing). |
+| `data`       | `bytes`                    | Binary payload associated with the event.                     |
+| `uuid`       | `string`                   | Unique event ID (e.g. serialized version 4 UUIDv4).           |
+
+Idempotent support for append operations is activated by setting a UUID on appended events.
 
 Include in:
 * [`AppendRequest`](#append-request) when writing new events to the store.
@@ -139,6 +141,7 @@ Included in:
 Matched by:
 * [`QueryItem`](#query-item) during [`Read`](#rpcs) and [`Append`](#rpcs) operations. 
 
+Idempotent support for append operations is activated by setting a UUID on appended events.
 
 ## Append Request
 
@@ -161,19 +164,20 @@ the `error_type`.
 
 ## Append Condition
 
-An `AppendCondition` message causes an append request to fail if events match, optionally after
-the "last known position".
+An `AppendCondition` message causes an append request to fail if events match its [`Query`](#query), optionally after
+a sequence number.
 
 | Field                  | Type                                | Description                   |
 |------------------------|-------------------------------------|-------------------------------|
 | `fail_if_events_match` | **optional**&nbsp;[`Query`](#query) | Query for conflicting events. |
-| `after`                | **optional**&nbsp;`uint64`          | The "last known position".    |
+| `after`                | **optional**&nbsp;`uint64`          | Sequence number.              |
 
 Include in:
 * [`AppendRequest`](#append-request) to define optimistic concurrent control.
 
-Command handlers can use the given value of [`ReadRequest.query`](#read-request) as the value of `fail_if_events_match`, and the
-received value of [`ReadResponse.head`](#read-response) as the value of `after`, when appending new events generated
+To implement a consistency boundary, command handlers can use the same [`Query`](#query) used in
+[`ReadRequest`](#read-request) as the value of `fail_if_events_match`, and the "head" received in
+the [`ReadResponse`](#read-response) as the value of `after`, when appending new events generated
 by a decision model.
 
 ## Append Response
@@ -228,6 +232,7 @@ The `ErrorType` enum indicates UmaDB error types returned within an [`ErrorRespo
 | `2`   | `INTEGRITY`     | Logical integrity violation (e.g. condition failed). |
 | `3`   | `CORRUPTION`    | Corrupted or invalid data detected.                  |
 | `4`   | `INTERNAL`      | Internal server or database error.                   |
+| `5`   | `AUTHENTICATION` | Client-server authentication error.                 |
 
 ## Summary
 
