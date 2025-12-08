@@ -10,9 +10,9 @@ head:
 
 # Using the CLI
 
-## Options
+## Command Line Interface
 
-Start the `umadb` server by specifying the listen address and the database path:
+After [installing](./install) the `umadb` binary, you can run it from the command line.
 
 ```
 umadb --listen 127.0.0.1:50051 --db-path ./uma.db
@@ -20,22 +20,37 @@ umadb --listen 127.0.0.1:50051 --db-path ./uma.db
 
 `umadb` supports the following command-line options:
 
-- `--listen`:  Address to bind to (e.g. `127.0.0.1:50051`)
-- `--db-path`: Path to the database file or directory
-- `--tls-cert`: Path to TLS server certificate (PEM), optional
-- `--tls-key`: Path to TLS server private key (PEM), optional
+- `--listen`: Address to bind to [default: 127.0.0.1:50051]
+- `--db-path`: Path to database file or directory [default: ./uma.db]
+- `--tls-cert`: Path to server TLS certificate (PEM), optional
+- `--tls-key`: Path to server TLS private key (PEM), optional
 - `--api-key`: API key for authenticating clients, optional
-- `-h, --help`: Show help information
-- `-V, --version`: Show version information
+- `-h, --help`: Print help
+- `-V, --version`: Print version
 
 The TLS and API key options can also be provided using environment variables:
-* `UMADB_TLS_CERT` — Path to the server TLS certificate (PEM), equivalent to `--tls-cert`
-* `UMADB_TLS_KEY` — Path to the server TLS private key (PEM), equivalent to `--tls-key`
+* `UMADB_TLS_CERT` — Path to server TLS certificate (PEM), equivalent to `--tls-cert`
+* `UMADB_TLS_KEY` — Path to server TLS private key (PEM), equivalent to `--tls-key`
 * `UMADB_API_KEY` — API key for authenticating clients, equivalent to `--api-key`
 
-## Self-signed TLS Certificate
+## Example with TLS and API key
 
-For development and testing purposes, you can create a self-signed TSL certificate with the following command:
+The following command starts a UmaDB server with TLS enabled and an API key:
+
+```bash
+umadb \
+  --listen 127.0.0.1:50051 \
+  --db-path ./uma.db  \
+  --tls-cert server.pem \
+  --tls-key server.key \
+  --api-key umadb:example-api-key-4f7c2b1d9e5f4a038c1a
+```
+
+You can generate a `server.key` and `server.pem` pair using `openssl`.
+
+## Self-signed Certificate
+
+For development and testing purposes, you can create a self-signed certificate with the following command:
 
 ```bash
 openssl req \
@@ -61,13 +76,3 @@ Explanation:
 * `-addext` "basicConstraints = CA:FALSE" — marks the cert as not a Certificate Authority.
 * `-addext` "subjectAltName = DNS:localhost" — adds a SAN entry, required by modern TLS clients.
 
-## Example
-
-```bash
-umadb \
-  --listen 127.0.0.1:50051 \
-  --db-path ./uma.db  \
-  --tls-cert server.pem \
-  --tls-key server.key \
-  --api-key umadb:example-api-key-4f7c2b1d9e5f4a038c1a
-```
