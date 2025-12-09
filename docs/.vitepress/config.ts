@@ -72,7 +72,6 @@ export default defineConfig({
                     { text: 'Rust Client', link: '/rust-client' },
                 ]
             },
-            { text: 'Developers', link: '/developers' },
             { text: 'License', link: '/license' },
         ],
         footer: {
