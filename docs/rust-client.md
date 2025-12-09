@@ -24,7 +24,7 @@ The clients and common DCB structs are described below, followed by some example
 
 ## Connection Builder
 
-The `UmaDCBClient::new` function is the main entry point for the Rust UmaDB clients.
+The `UmaDBClient::new` function is the main entry point for the Rust UmaDB clients.
 
 ```rust
 pub fn new(url: String) -> Self
