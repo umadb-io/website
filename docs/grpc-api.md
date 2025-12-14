@@ -82,7 +82,7 @@ A `QueryItem` defines a criterion for matching events.
 | `tags`  | **repeated**&nbsp;`string` | List of tags (logical AND).       |
 
 A `QueryItem` will match an [`Event`](#event) if:
-* one of its `types` matches the [`Event.type`](#event) or its `types` field is empty; AND
+* one of its `types` matches the [`Event.event_type`](#event) or its `types` field is empty; AND
 * all of its `tags` match one of the [`Event.tags`](#event) or its `tags` field is empty.
 
 Include in:

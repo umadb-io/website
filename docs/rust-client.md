@@ -271,7 +271,7 @@ A `DCBQueryItem` defines a criterion for matching events.
 | `tags`  | `Vec<String>` | List of tags (logical AND).       |
 
 A `DCBQueryItem` will match a [`DCBEvent`](#event) if:
-* one of its `types` matches the [`DCBEvent.type`](#event) or its `types` field is empty; AND
+* one of its `types` matches the [`DCBEvent.event_type`](#event) or its `types` field is empty; AND
 * all of its `tags` match one of the [`DCBEvent.tags`](#event) or its `tags` field is empty.
 
 ## Sequenced Event
