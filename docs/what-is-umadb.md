@@ -11,6 +11,8 @@ head:
 ![UmaDB logo](/images/UmaDB-brand-figure-torso-and-lettering.png)
 
 
+# Introduction
+
 ## What is UmaDB?
 
 UmaDB is a specialist open-source event store built for Dynamic Consistency Boundaries.
