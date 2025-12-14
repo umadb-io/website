@@ -1,4 +1,5 @@
 ---
+title: Introduction | UmaDB
 head:
   - - meta
     - name: description
@@ -9,9 +10,6 @@ head:
 ---
 
 ![UmaDB logo](/images/UmaDB-brand-figure-torso-and-lettering.png)
-
-
-# Introduction
 
 ## What is UmaDB?
 
