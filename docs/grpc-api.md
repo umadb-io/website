@@ -40,7 +40,7 @@ This is UmaDB's gRPC service for reading and appending events. It has three RPCs
 
 ## Read Request
 
-Send a `ReadRequest` message to the [`Read`](#rpcs) RPC to read events from the event store.
+Send a `ReadRequest` to the [`Read`](#rpcs) RPC to read events from the event store.
 
 Set `query` to select only specific events. Set `start` to read only from a specific position. If `start` is not set,
 events will be read from the first recorded event, or the last if `backwards` is `true`.
@@ -60,7 +60,7 @@ will continue as new events are appended to the store.
 
 ## Query
 
-A `Query` message defines criteria for selecting events in the event store.
+A `Query` defines criteria for selecting events in the event store.
 
 | Field   | Type                                 | Description                                |
 |---------|--------------------------------------|--------------------------------------------|
@@ -74,7 +74,7 @@ Include in:
 
 ## Query Item
 
-A `QueryItem` message defines a criterion for matching events.
+A `QueryItem` defines a criterion for matching events.
 
 | Field   | Type                       | Description                       |
 |---------|----------------------------|-----------------------------------|
@@ -109,7 +109,7 @@ of the last event in the message's `events` field.
 
 ## Sequenced Event
 
-A `SequencedEvent` message represents a recorded [`Event`](#event) along with its assigned sequence number.
+A `SequencedEvent` represents a recorded [`Event`](#event) along with its assigned sequence number.
 
 | Field      | Type              | Description          |
 |------------|-------------------|----------------------|
@@ -145,7 +145,7 @@ Idempotent support for append operations is activated by setting a UUID on appen
 
 ## Append Request
 
-Send an `AppendRequest` message to the [`Append`](#rpcs) RPC to append new events.
+Send an `AppendRequest` to the [`Append`](#rpcs) RPC to append new events.
 All the [`Event`](#event) messages in the `events` field will be appended atomically in order, unless
 the [`AppendCondition`](#append-condition) given in the `condition` field fails.
 
@@ -164,7 +164,7 @@ the `error_type`.
 
 ## Append Condition
 
-An `AppendCondition` message causes an append request to fail if events match its [`Query`](#query), optionally after
+An `AppendCondition` causes an append request to fail if events match its [`Query`](#query), optionally after
 a sequence number.
 
 | Field                  | Type                                | Description                   |
@@ -193,13 +193,13 @@ event processing components have become up-to-date, avoiding out-of-date views b
 
 ## Head Request
 
-Send a `HeadRequest` message to the [`Head`](#rpcs) RPC to get the position of the last recorded event in the event store.
+Send a `HeadRequest` to the [`Head`](#rpcs) RPC to get the position of the last recorded event in the event store.
 
 _This message has no fields._
 
 ## Head Response
 
-The server returns an `HeadResponse` message in response to each [`HeadRequest`](#head-request) message sent by clients to the [`Head`](#rpcs) RPC.
+The server returns a `HeadResponse` message in response to each [`HeadRequest`](#head-request) message sent by clients to the [`Head`](#rpcs) RPC.
 
 | Field      | Type                       | Description                                                       |
 |------------|----------------------------|-------------------------------------------------------------------|
@@ -209,7 +209,7 @@ The `position` field contains the sequence position of the last recorded event i
 
 ## Error Response
 
-The `ErrorResponse` message is used to return errors from the gRPC API.
+An `ErrorResponse` is used to return errors from the gRPC API.
 
 | Field        | Type                       | Description                              |
 |--------------|----------------------------|------------------------------------------|

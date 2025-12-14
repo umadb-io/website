@@ -276,7 +276,7 @@ A `DCBQueryItem` will match a [`DCBEvent`](#event) if:
 
 ## Sequenced Event
 
-A `DCBSequencedEvent` message represents a recorded [`DCBEvent`](#event) along with its assigned sequence number.
+A `DCBSequencedEvent` represents a recorded [`DCBEvent`](#event) along with its assigned sequence number.
 
 | Field      | Type       | Description          |
 |------------|------------|----------------------|
