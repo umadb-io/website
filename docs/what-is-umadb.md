@@ -1,5 +1,5 @@
 ---
-title: Introduction | UmaDB
+title: Introduction
 head:
   - - meta
     - name: description
