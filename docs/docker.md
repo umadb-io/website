@@ -18,7 +18,8 @@ UmaDB Docker images are available from:
 * [GitHub Container Registry](https://github.com/umadb-io/umadb/pkgs/container/umadb)
 
 Each image is built from the Docker `scratch` base image and contains a copy of
-the same statically linked Linux (musl) binaries distributed in GitHub Releases.
+the same statically linked Linux (musl) [binaries distributed in GitHub Releases](./install).
+You can install the pre-built binaries if you prefer.
 
 ## Pulling the Docker Image
 
