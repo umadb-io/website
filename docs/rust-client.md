@@ -235,7 +235,8 @@ async fn append(
 :::
 
 This method can be used to append new [`DCBEvent`](#event) instances to UmaDB atomically, with optional optimistic
-concurrency control. Events are written in order. This method is idempotent for events that have UUIDs.
+concurrency control. Events are written in order. This method is idempotent for conditional appending of events that
+have UUIDs. The server does not enforce uniqueness of events IDs.
 
 ### Parameters
 

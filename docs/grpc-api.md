@@ -130,7 +130,8 @@ An `Event` represents a single event either to be appended or already stored in 
 | `data`       | `bytes`                    | Binary payload associated with the event.                     |
 | `uuid`       | `string`                   | Unique event ID (e.g. serialized version 4 UUIDv4).           |
 
-Idempotent support for append operations is activated by setting a UUID on appended events.
+Idempotent support for append operations is activated by setting a UUID on appended events. The server
+does not enforce uniqueness of events IDs.
 
 Include in:
 * [`AppendRequest`](#append-request) when writing new events to the store.
@@ -140,8 +141,6 @@ Included in:
 
 Matched by:
 * [`QueryItem`](#query-item) during [`Read`](#rpcs) and [`Append`](#rpcs) operations. 
-
-Idempotent support for append operations is activated by setting a UUID on appended events.
 
 ## Append Request
 
@@ -155,6 +154,8 @@ the [`AppendCondition`](#append-condition) given in the `condition` field fails.
 | `condition` | **optional**&nbsp;[`AppendCondition`](#append-condition) | Optional condition to enforce optimistic concurrency and detect conflicts. |
 
 The server will return an [`AppendResponse`](#append-response) message if the `condition` does not fail.
+
+The [`Append`](#rpcs) is idempotent for conditional appending of events that have UUIDs. The server does not enforce uniqueness of events IDs.
 
 If the append condition fails, the server will return a gRPC error response with gRPC status `FAILED_PRECONDITION`
 and a human-readable message string.  In addition, the gRPC status details attribute will have a serialised
