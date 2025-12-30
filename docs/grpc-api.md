@@ -148,14 +148,15 @@ Send an `AppendRequest` to the [`Append`](#rpcs) RPC to append new events.
 All the [`Event`](#event) messages in the `events` field will be appended atomically in order, unless
 the [`AppendCondition`](#append-condition) given in the `condition` field fails.
 
+The [`Append`](#rpcs) RPC is idempotent for conditional appending of events that have UUIDs. The server
+does not enforce uniqueness of events IDs.
+
 | Field       | Type                                                     | Description                                                                |
 |-------------|----------------------------------------------------------|----------------------------------------------------------------------------|
 | `events`    | **repeated**&nbsp;[`Event`](#event)                      | Events to append, in order.                                                |
 | `condition` | **optional**&nbsp;[`AppendCondition`](#append-condition) | Optional condition to enforce optimistic concurrency and detect conflicts. |
 
 The server will return an [`AppendResponse`](#append-response) message if the `condition` does not fail.
-
-The [`Append`](#rpcs) is idempotent for conditional appending of events that have UUIDs. The server does not enforce uniqueness of events IDs.
 
 If the append condition fails, the server will return a gRPC error response with gRPC status `FAILED_PRECONDITION`
 and a human-readable message string.  In addition, the gRPC status details attribute will have a serialised

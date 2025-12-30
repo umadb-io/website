@@ -215,6 +215,7 @@ Returns a "read response" instance from which [`DCBSequencedEvent`](#sequenced-e
 ## Appending Events
 
 The `append()` method writes new events to the UmaDB server.
+
 ::: tabs
 == sync
 ```rust
@@ -235,8 +236,9 @@ async fn append(
 :::
 
 This method can be used to append new [`DCBEvent`](#event) instances to UmaDB atomically, with optional optimistic
-concurrency control. Events are written in order. This method is idempotent for conditional appending of events that
-have UUIDs. The server does not enforce uniqueness of events IDs.
+concurrency control. Events are written in order.
+
+This method is idempotent for conditional appending of events that have UUIDs. The server does not enforce uniqueness of events IDs.
 
 ### Parameters
 
