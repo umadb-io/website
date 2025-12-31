@@ -9,6 +9,7 @@ head:
 ---
 # Python Client
 
-The [official Python client](https://pypi.org/project/umadb/) for UmaDB is available on PyPI.
+The [official Python client](https://pypi.org/project/umadb/) for UmaDB is available on PyPI. It uses the [Rust client](./rust-client) via [PyO3](https://pyo3.rs/), and is super fast.
 
-The Python client uses the [Rust client](./rust-client) via PYO3.
+It is adapted into the Python [eventsourcing](https://eventsourcing.readthedocs.io/en/stable/topics/dcb.html)
+library via the [eventsourcing-umadb](https://pypi.org/project/eventsourcing-umadb/) package.
