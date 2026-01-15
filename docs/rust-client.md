@@ -374,7 +374,7 @@ Include in:
 To implement exactly-once semantics in event-processing components, pull events from an upstream
 source after the [last recorded upstream position](#getting-tracking-info), then record the upstream positions
 of upstream events along with [new state](#appending-events) that results from processing those events.
-By processing event sequentially in this way, each event will be processed at least once. And by
+By processing events sequentially in this way, each event will be processed at least once. And by
 recording tracking information along with new state, the new state will be recorded at most once.
 The combination of "at least once" processing and "at most once" recording will give "exactly once"
 semantics from the point of view of consumers of the recorded state.
