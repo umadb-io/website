@@ -16,7 +16,7 @@ appending events in UmaDB via the UmaDB [gRPC API](./grpc-api).
 
 The synchronous client functions effectively as a wrapper around the asynchronous client.
 
-The Rust clients implement the same traits and types used internally in the UmaDB server, and so
+The Rust clients implement the same traits and types used internally in an UmaDB server, and so
 effectively represent remotely the essential internal server operations, with gRPC used as a transport
 layer for inter-process communication (IPC).
 
@@ -82,7 +82,7 @@ pub fn connect(&self) -> DCBResult<SyncUmaDBClient>
 ```
 
 
-### Examples
+### Connection Examples
 
 The examples below show how to construct synchronous and asynchronous connections to UmaDB.
 
@@ -160,23 +160,66 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ## Asynchronous Client
 
 The asynchronous UmaDB client implements the client-side of the gRPC API, and provides an asynchronous Rust API
-for interacting with the UmaDB event store.
+for interacting with an UmaDB event store.
 
 ## Synchronous Client
 
 The synchronous client is a thin wrapper around the asynchronous client. It provides synchronous, but otherwise
 identical methods, with blocking behavior.
 
+## Appending Events
 
-## Reading Events
-
-The `read()` method reads events from the UmaDB server.
+The `append()` method writes new events to an UmaDB server.
 
 ::: tabs
 == sync
 ```rust
-fn read<'a>(
-    &'a self,
+fn append(
+    &self,
+    events: Vec<DCBEvent>,
+    condition: Option<DCBAppendCondition>,
+    tracking_info: Option<TrackingInfo>,
+) -> DCBResult<u64>
+```
+== async
+```rust
+async fn append(
+    &self,
+    events: Vec<DCBEvent>,
+    condition: Option<DCBAppendCondition>,
+    tracking_info: Option<TrackingInfo>,
+) -> DCBResult<u64>
+```
+:::
+
+The `append()` method can be used to append new [`DCBEvent`](#event) instances to UmaDB atomically,
+with an optional append condition and optional tracking information. Events are written in order.
+
+Conditional appends with event UUIDs are idempotent. The server does not enforce uniqueness of events IDs.
+
+### Parameters
+
+| Name            | Type                         | Description                                                                             |
+|-----------------|------------------------------|-----------------------------------------------------------------------------------------|
+| `events`        | `Vec<DCBEvent>`              | The list of events to append. Each includes an event type, tags, and data payload.      |
+| `condition`     | `Option<DCBAppendCondition>` | Optional [append condition](#append-condition) to ensure no conflicting writes occur.   |
+| `tracking_info` | `Option<TrackingInfo>`       | Optional [tracking information](#tracking-info) – for event-processing components only. |
+
+### Return Value
+
+Returns the sequence number (`u64`) of the last successfully appended event from this operation. This
+value can be used to wait for downstream event-processing components in a CQRS system to become up-to-date.
+
+
+## Reading Events
+
+The `read()` method returns recorded events from an UmaDB server.
+
+::: tabs
+== sync
+```rust
+fn read(
+    &self,
     query: Option<DCBQuery>,
     start: Option<u64>,
     backwards: bool,
@@ -186,8 +229,8 @@ fn read<'a>(
 ```
 == async
 ```rust
-async fn read<'a>(
-    &'a self,
+async fn read(
+    &self,
     query: Option<DCBQuery>,
     start: Option<u64>,
     backwards: bool,
@@ -197,7 +240,7 @@ async fn read<'a>(
 ```
 :::
 
-This method can be used both for constructing decision models in a domain layer, and for projecting events into
+The `read()` method can be used both for constructing decision models in a domain layer, and for projecting events into
 materialized views in CQRS. An optional [`DCBQuery`](#query) can be provided to select by tags and types.
 
 ### Parameters
@@ -210,84 +253,70 @@ materialized views in CQRS. An optional [`DCBQuery`](#query) can be provided to 
 | `limit`     | `Option<u32>`      | Optional cap on the number of events to retrieve.                                                                                                            |
 | `subscribe` | `bool`             | If `true`, keeps the stream open to deliver future events as they arrive.                                                                                    |
 
+### Return Value
+
 Returns a "read response" instance from which [`DCBSequencedEvent`](#sequenced-event) instances, and the most relevant "last known" sequence number, can be obtained.
 
-## Appending Events
 
-The `append()` method writes new events to the UmaDB server.
+## Getting Head Position
+
+The `head()` method returns the position of the last recorded event in an UmaDB server. 
 
 ::: tabs
 == sync
 ```rust
-fn append(
-    &self,
-    events: Vec<DCBEvent>,
-    condition: Option<DCBAppendCondition>,
-) -> DCBResult<u64>
+fn head(self) -> DCBResult<Option<u64>>
 ```
 == async
 ```rust
-async fn append(
-    &self,
-    events: Vec<DCBEvent>,
-    condition: Option<DCBAppendCondition>,
-) -> DCBResult<u64>
+async fn head(self) -> DCBResult<Option<u64>>
 ```
 :::
 
-This method can be used to append new [`DCBEvent`](#event) instances to UmaDB atomically, with optional optimistic
-concurrency control. Events are written in order.
+The `head()` method can be used for counting the number of recorded events in the database, or for determining the position
+of the last recorded event when subscribing only to new events.
 
-This method is idempotent for conditional appending of events that have UUIDs. The server does not enforce uniqueness of events IDs.
+### Return Value
+
+Returns the position (`u64`) of the last recorded event in the event store, or `None` if no events have been recorded yet.
+
+
+## Getting Tracking Info
+
+The `get_tracking_info()` method returns the last recorded position of an upstream event.
+
+::: tabs
+== sync
+```rust
+fn get_tracking_info(
+    &self,
+    source: String,
+) -> DCBResult<Option<u64>>
+```
+== async
+```rust
+async fn get_tracking_info(
+    &self,
+    source: String,
+) -> DCBResult<Option<u64>>
+```
+:::
+
+The `get_tracking_info()` method can be used when starting or resuming an
+event-processing component. The event-processing component will start by requesting new events from the upstream
+sequence after this position. The position of an upstream event that has been processed successfully can be [recorded
+atomically](#appending-events) when appending new events generated by processing that event.
 
 ### Parameters
 
-| Name        | Type                         | Description                                                                          |
-|-------------|------------------------------|--------------------------------------------------------------------------------------|
-| `events`    | `Vec<DCBEvent>`              | The list of events to append. Each includes an event type, tags, and data payload.   |
-| `condition` | `Option<DCBAppendCondition>` | Optional append condition (e.g. `After(u64)`) to ensure no conflicting writes occur. |
+| Name        | Type                         | Description                                                                           |
+|-------------|------------------------------|---------------------------------------------------------------------------------------|
+| `source`    | `String`                     | The name of the upstream source.                                                      |
 
-Returns the sequence number (`u64`) of the last successfully appended event from this operation. This
-value can be used to wait for downstream event-processing components in a CQRS system to become up-to-date.
+### Return Value
 
-## Query
+Returns the position (`u64`) of an event in an upstream sequence, or `None` if no such event has been processed yet.
 
-A `DCBQuery` defines criteria for selecting events in the event store.
-
-| Field   | Type                | Description                                |
-|---------|---------------------|--------------------------------------------|
-| `items` | `Vec<DCBQueryItem>` | A list of selection criteria (logical OR). |
-
-A [`DCBEvent`](#event) is selected if any [`DCBQueryItem`](#query-item) matches or the `items` field is empty.
-
-Include in:
-* [`Read requests`](#reading-events) to select events returned by the server.
-* [`DCBAppendCondition`](#append-condition) to select conflicting events.
-
-## Query Item
-
-A `DCBQueryItem` defines a criterion for matching events.
-
-| Field   | Type          | Description                       |
-|---------|---------------|-----------------------------------|
-| `types` | `Vec<String>` | List of event types (logical OR). |
-| `tags`  | `Vec<String>` | List of tags (logical AND).       |
-
-A `DCBQueryItem` will match a [`DCBEvent`](#event) if:
-* one of its `types` matches the [`DCBEvent.event_type`](#event) or its `types` field is empty; AND
-* all of its `tags` match one of the [`DCBEvent.tags`](#event) or its `tags` field is empty.
-
-## Sequenced Event
-
-A `DCBSequencedEvent` represents a recorded [`DCBEvent`](#event) along with its assigned sequence number.
-
-| Field      | Type       | Description          |
-|------------|------------|----------------------|
-| `position` | `u64`      | The sequence number. |
-| `event`    | `DCBEvent` | The recorded event.  |
-
-Included in:
-* [`Read responses`](#reading-events) when the server responds to read requests.
 
 ## Event
 
@@ -303,10 +332,10 @@ A `DCBEvent` represents a single event either to be appended or already stored i
 Idempotent support for append operations is activated by setting a UUID on appended events.
 
 Include in:
-* [Append request](#appending-events) when writing new events to the store.
+* [Append requests](#appending-events) when writing new events to the store.
 
 Included in:
-* [`DCBSequencedEvent`](#sequenced-event) when the server responds to read requests.
+* [`DCBSequencedEvent`](#sequenced-event) objects when the server responds to read requests.
 
 Matched by:
 * [`DCBQueryItem`](#query-item) during [`read()`](#reading-events) and [`append()`](#appending-events) operations.
@@ -329,26 +358,84 @@ To implement a consistency boundary, command handlers can use the same [`DCBQuer
 [reading events](#read-request) as the value of `fail_if_events_match`, and the "head" sequence
 number received from the read response as the value of `after`.
 
+
+## Tracking Info
+
+A `TrackingInfo` instance indicates the source and position of an upstream event that has been processed.
+
+| Field      | Type     | Description      |
+|------------|----------|------------------|
+| `source`   | `String` | Source name.     |
+| `position` | `u64`    | Sequence number. |
+
+Include in:
+* [Append requests](#appending-events) to specify tracking information; for event-processing components only.
+
+To implement exactly-once semantics in event-processing components, pull events from an upstream
+source after the [last recorded upstream position](#getting-tracking-info), then record the upstream positions
+of upstream events along with [new state](#appending-events) that results from processing those events.
+By processing event sequentially in this way, each event will be processed at least once. And by
+recording tracking information along with new state, the new state will be recorded at most once.
+The combination of "at least once" processing and "at most once" recording will give "exactly once"
+semantics from the point of view of consumers of the recorded state.
+
+
+## Query
+
+A `DCBQuery` defines criteria for selecting events in the event store.
+
+| Field   | Type                | Description                                |
+|---------|---------------------|--------------------------------------------|
+| `items` | `Vec<DCBQueryItem>` | A list of selection criteria (logical OR). |
+
+A [`DCBEvent`](#event) is selected if any [`DCBQueryItem`](#query-item) matches or the `items` field is empty.
+
+Include in:
+* [Read requests](#reading-events) to select events returned by the server.
+* A [`DCBAppendCondition`](#append-condition) to select conflicting events.
+
+
+## Query Item
+
+A `DCBQueryItem` defines a criterion for matching events.
+
+| Field   | Type          | Description                       |
+|---------|---------------|-----------------------------------|
+| `types` | `Vec<String>` | List of event types (logical OR). |
+| `tags`  | `Vec<String>` | List of tags (logical AND).       |
+
+A `DCBQueryItem` will match a [`DCBEvent`](#event) if:
+* one of its `types` matches the [`DCBEvent.event_type`](#event) or its `types` field is empty; AND
+* all of its `tags` match one of the [`DCBEvent.tags`](#event) or its `tags` field is empty.
+
+
+## Sequenced Event
+
+A `DCBSequencedEvent` represents a recorded [`DCBEvent`](#event) along with its assigned sequence number.
+
+| Field      | Type       | Description          |
+|------------|------------|----------------------|
+| `position` | `u64`      | The sequence number. |
+| `event`    | `DCBEvent` | The recorded event.  |
+
+Included in:
+* [Read responses](#reading-events) when the server responds to read requests.
+
+
 ## Error
 
 The `DCBError` enum represents all errors that can occur in UmaDB.
 
-| Variant                          | Description                                            |
-|----------------------------------|--------------------------------------------------------|
-| `Io(error)`                      | I/O or filesystem error.                               |
-| `IntegrityError(message)`        | Append condition failed or data integrity violated.    |
-| `Corruption(message)`            | Corruption detected in stored data.                    |
-| `PageNotFound(page_id)`          | Referenced page not found in storage.                  |
-| `DirtyPageNotFound(page_id)`     | Dirty page expected in cache not found.                |
-| `RootIDMismatch(old_id, new_id)` | Mismatch between stored and computed root page IDs.    |
-| `DatabaseCorrupted(message)`     | Database file corrupted or invalid.                    |
-| `InternalError(message)`         | Unexpected internal logic error.                       |
-| `SerializationError(message)`    | Failure to serialize data to bytes.                    |
-| `DeserializationError(message)`  | Failure to parse serialized data.                      |
-| `PageAlreadyFreed(page_id)`      | Attempted to free a page that was already freed.       |
-| `PageAlreadyDirty(page_id)`      | Attempted to mark a page dirty that was already dirty. |
-| `TransportError(message)`        | Client-server connection failed.                       |
-| `AuthenticationError(message)`   | Client-server authentication failed.                   |
+| Variant                          | Description                                         |
+|----------------------------------|-----------------------------------------------------|
+| `TransportError(message)`        | Client-server connection failed.                    |
+| `AuthenticationError(message)`   | Client-server authentication failed.                |
+| `IntegrityError(message)`        | Append condition failed or data integrity violated. |
+| `Corruption(message)`            | Corruption detected in stored data.                 |
+| `SerializationError(message)`    | Failure to serialize data to bytes.                 |
+| `InternalError(message)`         | Unexpected internal server error.                   |
+| `Io(error)`                      | Other errors.                                       |
+
 
 ## Result
 
@@ -360,6 +447,7 @@ type DCBResult<T> = Result<T, DCBError>
 
 All the client methods return this type, which yields either a successful result `T` or a `DCBError`.
 
+
 ## Examples
 
 The examples below show how to use the Rust clients for UmaDB:
@@ -369,7 +457,7 @@ The examples below show how to use the Rust clients for UmaDB:
 ```rust
 use umadb_client::UmaDBClient;
 use umadb_dcb::{
-    DCBAppendCondition, DCBError, DCBEvent, DCBEventStoreSync, DCBQuery, DCBQueryItem,
+    DCBAppendCondition, DCBError, DCBEvent, DCBEventStoreSync, DCBQuery, DCBQueryItem, TrackingInfo,
 };
 use uuid::Uuid;
 
@@ -424,8 +512,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             fail_if_events_match: cb.clone(),
             after: last_known_position,
         }),
+        None,
     )?;
-
     println!("Appended event at position: {}", commit_position1);
 
     // Append conflicting event - expect an error
@@ -435,13 +523,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         data: b"Hello, world!".to_vec(),
         uuid: Some(Uuid::new_v4()), // different UUID
     };
-
     let conflicting_result = client.append(
         vec![conflicting_event],
         Some(DCBAppendCondition {
             fail_if_events_match: cb.clone(),
             after: last_known_position,
         }),
+        None,
     );
 
     // Expect an integrity error
@@ -452,7 +540,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         other => panic!("Expected IntegrityError, got {:?}", other),
     }
 
-    // Appending is idempotent for the same event IDs and append condition.
+    // Conditional appends with event UUIDs are idempotent.
     println!(
         "Retrying to append event at position: {:?}",
         last_known_position
@@ -463,6 +551,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             fail_if_events_match: cb.clone(),
             after: last_known_position,
         }),
+        None,
     )?;
 
     if commit_position1 == commit_position2 {
@@ -491,6 +580,45 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
+    // Track an upstream position
+    let upstream_position = client.get_tracking_info("upstream")?;
+    let next_upstream_position = upstream_position.unwrap_or(0) + 1;
+    println!("Next upstream position: {next_upstream_position}");
+    client.append(
+        vec![],
+        None,
+        Some(TrackingInfo {
+            source: "upstream".to_string(),
+            position: next_upstream_position,
+        }),
+    )?;
+    assert_eq!(
+        next_upstream_position,
+        client.get_tracking_info("upstream")?.unwrap()
+    );
+    println!("Upstream position tracked okay!");
+
+    // Try recording the same upstream position
+    let conflicting_result = client.append(
+        vec![],
+        None,
+        Some(TrackingInfo {
+            source: "upstream".to_string(),
+            position: next_upstream_position,
+        }),
+    );
+
+    // Expect an integrity error
+    match conflicting_result {
+        Err(DCBError::IntegrityError(integrity_error)) => {
+            println!(
+                "Conflicting upstream position was rejected: {:?}",
+                integrity_error
+            );
+        }
+        other => panic!("Expected IntegrityError, got {:?}", other),
+    }
+
     Ok(())
 }
 ```
@@ -500,6 +628,7 @@ use futures::StreamExt;
 use umadb_client::UmaDBClient;
 use umadb_dcb::{
     DCBAppendCondition, DCBError, DCBEvent, DCBEventStoreAsync, DCBQuery, DCBQueryItem,
+    TrackingInfo,
 };
 use uuid::Uuid;
 
@@ -559,9 +688,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 fail_if_events_match: cb.clone(),
                 after: last_known_position,
             }),
+            None,
         )
         .await?;
-
     println!("Appended event at position: {}", commit_position1);
 
     // Append conflicting event - expect an error
@@ -571,7 +700,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         data: b"Hello, world!".to_vec(),
         uuid: Some(Uuid::new_v4()), // different UUID
     };
-
     let conflicting_result = client
         .append(
             vec![conflicting_event.clone()],
@@ -579,6 +707,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 fail_if_events_match: cb.clone(),
                 after: last_known_position,
             }),
+            None,
         )
         .await;
 
@@ -590,7 +719,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         other => panic!("Expected IntegrityError, got {:?}", other),
     }
 
-    // Appending is idempotent for the same event IDs and append condition.
+    // Conditional appends with event UUIDs are idempotent.
     println!(
         "Retrying to append event at position: {:?}",
         last_known_position
@@ -602,6 +731,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 fail_if_events_match: cb.clone(),
                 after: last_known_position,
             }),
+            None,
         )
         .await?;
 
@@ -630,6 +760,50 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             Err(status) => panic!("gRPC stream error: {}", status),
         }
     }
+
+    // Track an upstream position
+    let upstream_position = client.get_tracking_info("upstream").await?;
+    let next_upstream_position = upstream_position.unwrap_or(0) + 1;
+    println!("Next upstream position: {next_upstream_position}");
+    client
+        .append(
+            vec![],
+            None,
+            Some(TrackingInfo {
+                source: "upstream".to_string(),
+                position: next_upstream_position,
+            }),
+        )
+        .await?;
+    assert_eq!(
+        next_upstream_position,
+        client.get_tracking_info("upstream").await?.unwrap()
+    );
+    println!("Upstream position tracked okay!");
+
+    // Try recording the same upstream position
+    let conflicting_result = client
+        .append(
+            vec![],
+            None,
+            Some(TrackingInfo {
+                source: "upstream".to_string(),
+                position: next_upstream_position,
+            }),
+        )
+        .await;
+
+    // Expect an integrity error
+    match conflicting_result {
+        Err(DCBError::IntegrityError(integrity_error)) => {
+            println!(
+                "Conflicting upstream position was rejected: {:?}",
+                integrity_error
+            );
+        }
+        other => panic!("Expected IntegrityError, got {:?}", other),
+    }
+
     Ok(())
 }
 ```
