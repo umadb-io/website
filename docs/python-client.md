@@ -41,28 +41,28 @@ pip install "umadb" && pip freeze > requirements.txt
 
 ## Connecting to UmaDB
 
-Use the `Client` class as the main entry point.
+Use the `Client` class as the main entry point for connecting to an UmaDB server.
 
 ```python
-Client(
+class Client(
     url: str,
     ca_path: str | None = None,
     api_key: str | None = None,
     batch_size: int | None = None,
-)
+):
+    ...
 ```
 
-A `url` argument is required. If the argument starts with `https` or `grpcs`, a secure TLS channel is created; otherwise an insecure channel is used.
+### Parameters
 
-### Optional Configuration
+| Name         | Type        | Description                                                                                                                                         |
+|--------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `url`        | `str`       | Required connection string. If the argument starts with `https` or `grpcs`, a secure TLS channel is created; otherwise an insecure channel is used. |
+| `ca_path`    | `str\|None` | Optional path to a PEM-encoded root/CA certificate for TLS connections (useful for self-signed servers).                                            |
+| `api_key`    | `str\|None` | Optional API key used for authenticating with the server.                                                                                           |
+| `batch_size` | `int\|None` | Optional hint for how many events to buffer per batch when reading. The server may cap this; a sensible default is used if unset..                  |
 
-* `ca_path`: Path to a PEM-encoded root/CA certificate for TLS connections (useful for self-signed servers).
-
-* `api_key`: API key string used for authenticating with the server.
-
-* `batch_size`: Hint for how many events to buffer per batch when reading. The server may cap this; a sensible default is used if unset.
-
-### Examples
+### Connection Examples
 
 ```python
 from umadb import Client
@@ -94,80 +94,43 @@ client = Client(
     batch_size=1000,
 )
 ```
-
-## Reading Events
-
-Use `read()` to retrieve events. It can be used for decision models and for building projections (CQRS). When `subscribe=True`, the server keeps the stream open to deliver future events.
-
-```python
-read(
-    query: Query | None = None,
-    start: int | None = None,
-    backwards: bool = False,
-    limit: int | None = None,
-    subscribe: bool = False,
-) -> ReadResponse
-```
-
-- `query`: Optional structured filter (types/tags). See Query below.
-
-- `start`: Read from this sequence number (inclusive). When `backwards=True`, reads backwards from `start` (or the log tail if `start` is `None`).
-
-- `backwards`: Read direction flag.
-
-- `limit`: Optional maximum number of events to read.
-
-- `subscribe`: If `True`, the stream remains open for new events.
-
-The returned `ReadResponse` is iterable and yields `SequencedEvent` instances; it also exposes `head()` to retrieve the most relevant last-known sequence number for the stream.
-
-### Example
-
-```python
-from umadb import Client, Query, QueryItem
-
-client = Client("http://localhost:50051")
-
-# Filter by type(s) and tag(s)
-q = Query(items=[QueryItem(types=["example"], tags=["tag1", "tag2"])])
-
-resp = client.read(query=q, start=None, backwards=False, limit=None, subscribe=False)
-for item in resp:
-    print(f"Got event at position {item.position}: {item.event}")
-
-last_known = resp.head()
-print("Last known position:", last_known)
-
-# Subscribe to new events
-subscription = client.read(subscribe=True)
-for se in subscription:
-    print("New event:", se.position, se.event)
-    # Break for demo purposes
-    break
-```
-
 ## Appending Events
 
-Use `append()` to write new events atomically with optional optimistic concurrency control. Events are written
-in order. Conditional appends with event UUIDs are idempotent. The server does not enforce uniqueness of event IDs.
+The `Client.append()` method writes new events to an UmaDB server.
 
 ```python
-append(
+def append(
     events: list[Event],
     condition: AppendCondition | None = None,
-    tracking: Tracking | None = None,
-) -> int  # returns last appended position
+    tracking_info: TrackingInfo | None = None,
+) -> int:
+    ...
 ```
 
-- `events`: List of `Event` objects to append.
-- `condition`: Optional `AppendCondition` (e.g., guard against conflicting writes).
-- `tracking`: Optional `Tracking` (source and position of upstream event, for event-processing components only).
+The `Client.append()` method can be used to append new `Event` instances to UmaDB atomically, with an optional append
+condition, and optional tracking information. Events are written in order.
+
+Conditional appends with event UUIDs are idempotent. The server does not enforce uniqueness of events IDs.
+
+### Parameters
+
+| Name            | Type                    | Description                                                                        |
+|-----------------|-------------------------|------------------------------------------------------------------------------------|
+| `events`        | `list[Event]`           | The list of events to append. Each includes an event type, tags, and data payload. |
+| `condition`     | `AppendCondition\|None` | Optional append condition to ensure no conflicting writes occur.                   |
+| `tracking_info` | `TrackingInfo\|None`    | Optional tracking information – for event-processing components only.              |
+
+### Return Value
+
+Returns the sequence number (`int`) of the last successfully appended event from this operation. This
+value can be used to wait for downstream event-processing components in a CQRS system to become up-to-date.
 
 ### Example
 
 ```python
-from umadb import Client, Event, Query, QueryItem, AppendCondition, IntegrityError
 import uuid
+
+from umadb import AppendCondition, Client, Event, IntegrityError, Query, QueryItem
 
 client = Client("http://localhost:50051")
 
@@ -195,9 +158,19 @@ cond = AppendCondition(fail_if_events_match=cb, after=last_known)
 position1 = client.append([ev], condition=cond)
 print("Appended at:", position1)
 
-# Conflicting append should raise an error (e.g. IntegrityError)
+# Conflicting append should raise an error (e.g. ValueError)
 try:
-    client.append([Event(event_type="example", tags=["tag1", "tag2"], data=b"Hello, world!", uuid=str(uuid.uuid4()))], condition=cond)
+    client.append(
+        [
+            Event(
+                event_type="example",
+                tags=["tag1", "tag2"],
+                data=b"Hello, world!",
+                uuid=str(uuid.uuid4()),
+            )
+        ],
+        condition=cond,
+    )
 except IntegrityError as e:
     print("Conflicting event was rejected:", e)
 
@@ -207,69 +180,203 @@ assert position1 == position2
 print("Idempotent retry returned position:", position2)
 ```
 
-## Data Structures
+## Reading Events
 
-### Query
+The `Client.read()` method returns recorded events from an UmaDB server.
+
+```python
+def read(
+    query: Query | None = None,
+    start: int | None = None,
+    backwards: bool = False,
+    limit: int | None = None,
+    subscribe: bool = False,
+) -> ReadResponse:
+    ...
+```
+The `Client.read()` method can be used both for constructing decision models in a domain layer, and for projecting events into
+materialized views in CQRS. An optional `Query` can be provided to select by tags and types.
+
+### Parameters
+
+| Name        | Type          | Description                                                                                                                                                 |
+|-------------|---------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `query`     | `Query\|None` | Optional structured query to filter events (by tags, event types, etc).                                                                                     |
+| `start`     | `int\|None`   | Read events *from* this sequence number. Only events with positions greater than or equal will be returned (or less than or equal if `backwards` is `True`. |
+| `backwards` | `bool`        | If `True` events will be read backwards, either from the given position or from the last recorded event.                                                    |
+| `limit`     | `int\|None`   | Optional cap on the number of events to retrieve.                                                                                                           |
+| `subscribe` | `bool`        | If `True`, keeps the stream open to deliver future events as they arrive.                                                                                   |
+
+### Return Value
+
+Returns an iterable "read response" instance from which `SequencedEvent` instances, and the most relevant "last known" sequence number, can be obtained.
+
+### Example
+
+```python
+from umadb import Client, Query, QueryItem
+
+client = Client("http://localhost:50051")
+
+# Filter by type(s) and tag(s)
+q = Query(items=[QueryItem(types=["example"], tags=["tag1", "tag2"])])
+
+resp = client.read(
+    query=q, start=None, backwards=False, limit=None, subscribe=False
+)
+for item in resp:
+    print(f"Got event at position {item.position}: {item.event}")
+
+last_known = resp.head()
+print("Last known position:", last_known)
+
+# Subscribe to new events
+subscription = client.read(subscribe=True)
+for se in subscription:
+    print("New event:", se.position, se.event)
+    # Break for demo purposes
+    break
+```
+
+## Getting Head Position
+
+The `Client.head()` method returns the position of the last event recorded in an UmaDB server.
+
+```python
+def head(self) -> int | None: ...
+```
+
+The `Client.head()` method can be used both for constructing decision models in a domain layer, and for projecting events into
+materialized views in CQRS. An optional [`DCBQuery`](#query) can be provided to select by tags and types.
+
+### Return Value
+
+Returns the position (`u64`) of the last recorded event in the event store, or `None` if no events have been recorded yet.
+
+
+## Getting Tracking Info
+
+The `Client.get_tracking_info()` method returns the last recorded position in an upstream sequence of events.
+
+```python
+def get_tracking_info(self, source: str) -> int | None: ...
+```
+
+The `Client.get_tracking_info()` method can be used when starting or resuming an
+event-processing component. The event-processing component will start by requesting new events from the upstream
+sequence after this position. The position of an upstream event that has been processed successfully can be recorded
+atomically when appending new events generated by processing that event.
+
+### Parameters
+
+| Name        | Type  | Description             |
+|-------------|-------|-------------------------|
+| `source`    | `str` | Upstream sequence name. |
+
+Returns the last recorded upstream position (`int`), or `None` if the sequence name is not found.
+
+## Event
+
+An `Event` represents a single event either to be appended or already stored in the event log.
+
+| Field        | Type        | Description                                                   |
+|--------------|-------------|---------------------------------------------------------------|
+| `event_type` | `str`       | The event’s logical type (e.g. `"UserRegistered"`).           |
+| `tags`       | `list<str>` | Tags assigned to the event (used for filtering and indexing). |
+| `data`       | `bytes`     | Binary payload associated with the event.                     |
+| `uuid`       | `str\|None` | Unique event ID.                                              |
+
+Idempotent support for append operations is activated by setting a UUID on appended events.
+
+Include in:
+* Append requests when writing new events to the store.
+
+Included in:
+* `SequencedEvent` objects when the server responds to read requests.
+
+Matched by:
+* `QueryItem` during `read()` and `append()` operations.
+
+
+## Append Condition
+
+An `AppendCondition` causes an append request to fail if events match its `Query`, optionally after
+a sequence number.
+
+| Field                  | Type        | Description                   |
+|------------------------|-------------|-------------------------------|
+| `fail_if_events_match` | `Query`     | Query for conflicting events. |
+| `after`                | `int\|None` | Sequence number.              |
+
+Include in:
+* Append requests to define optimistic concurrent control.
+
+To implement a consistency boundary, command handlers can use the same `Query` used when
+reading events as the value of `fail_if_events_match`, and the "head" sequence
+number received from the read response as the value of `after`.
+
+
+## Tracking Info
+
+A `TrackingInfo` instance indicates the source and position of an upstream event.
+
+| Field      | Type  | Description               |
+|------------|-------|---------------------------|
+| `source`   | `str` | Upstream sequence name.   |
+| `position` | `int` | Upstream sequence number. |
+
+Include in:
+* Append requests when recording the results of processing an upstream event.
+
+To implement exactly-once semantics in event-processing components, pull events from an upstream
+source after the last recorded position, then record the upstream positions
+of upstream events along with new state that results from processing those events.
+By processing event sequentially in this way, each event will be processed at least once. And by
+recording tracking information along with new state, the new state will be recorded at most once.
+The combination of "at least once" processing and "at most once" recording gives "exactly once"
+semantics from the point of view of consumers of the recorded state.
+
+
+## Query
 
 A `Query` defines criteria for selecting events in the event store.
 
-- `items: list[QueryItem]` — A list of selection criteria (logical OR). If empty, all events match.
+| Field   | Type              | Description                                |
+|---------|-------------------|--------------------------------------------|
+| `items` | `list[QueryItem]` | A list of selection criteria (logical OR). |
 
-Use in:
-- Read requests to select returned events.
-- `AppendCondition` to define conflicts.
+An `Event` is selected if any `QueryItem` matches or the `items` field is empty.
 
-### QueryItem
+Include in:
+* Read requests to select events returned by the server.
+* An `AppendCondition` to select conflicting events.
 
-A `QueryItem` defines one criterion:
 
-- `types: list[str] | None` — Event types (logical OR). If empty/None, any type matches.
-- `tags: list[str] | None` — Required tags (logical AND). If empty/None, any tags match.
+## Query Item
 
-A `QueryItem` matches an `Event` if one of its `types` equals `Event.event_type` (or `types` is empty) AND all of its `tags` are present in `Event.tags` (or `tags` is empty).
+A `QueryItem` defines a criterion for matching events.
 
-### Event
+| Field   | Type        | Description                       |
+|---------|-------------|-----------------------------------|
+| `types` | `list[str]` | List of event types (logical OR). |
+| `tags`  | `list[str]` | List of tags (logical AND).       |
 
-Represents a single event to append or already stored in the log.
+A `QueryItem` will match an `Event if:
+* one of its `types` matches the `Event.event_type` or its `types` field is empty; AND
+* all of its `tags` match one of the `Event.tags` or its `tags` field is empty.
 
-- `event_type: str` — Logical type (e.g., `"UserRegistered"`).
-- `tags: list[str]` — Tags for filtering and indexing.
-- `data: bytes` — Binary payload.
-- `uuid: str | None` — Unique event ID enabling idempotent append retries.
+
+## Sequenced Event
+
+A `SequencedEvent` represents a recorded `Event` along with its assigned sequence number.
+
+| Field      | Type    | Description          |
+|------------|---------|----------------------|
+| `position` | `int`   | The sequence number. |
+| `event`    | `Event` | The recorded event.  |
 
 Included in:
-- Append requests when writing new events.
-- `SequencedEvent.event` when reading.
-
-### SequencedEvent
-
-Represents a recorded `Event` with its sequence number.
-
-- `position: int` — Sequence number.
-- `event: Event` — The recorded event.
-
-Returned from:
-- Read responses.
-
-### AppendCondition
-
-Causes an append to fail if events matching `fail_if_events_match` exist, optionally only for events after a given position.
-
-- `fail_if_events_match: Query` — Query for conflicting events.
-- `after: int | None` — Sequence number boundary.
-
-Use in:
-- Append requests to implement optimistic concurrency control across a consistency boundary.
-
-### Tracking
-
-Details the position of an upstream event that has been processed.
-
-- `source: str` — Upstream source or context name.
-- `position: int` — Upstream event sequence number.
-
-Use in:
-- Append requests to implement exactly-once event processing.
+* Read responses when the server responds to read requests.
 
 
 ## Error Handling
@@ -286,8 +393,9 @@ Your application should catch these as appropriate.
 ## Complete Example
 
 ```python
-from umadb import Client, Event, Query, QueryItem, AppendCondition, IntegrityError
 import uuid
+
+from umadb import AppendCondition, Client, Event, IntegrityError, Query, QueryItem
 
 # Connect to the gRPC server (TLS + API key)
 client = Client(
@@ -349,8 +457,17 @@ for ev in subscription:
 ## Example with Tracking
 
 ```python
-from umadb import Client, Event, Query, QueryItem, AppendCondition, Tracking, IntegrityError
 import uuid
+
+from umadb import (
+    AppendCondition,
+    Client,
+    Event,
+    IntegrityError,
+    Query,
+    QueryItem,
+    TrackingInfo,
+)
 
 # Connect to the gRPC server (TLS + API key)
 client = Client(
@@ -358,13 +475,13 @@ client = Client(
 )
 
 # Get last processed upstream event position
-last_processed_position = client.tracking("upstream")
+last_processed_position = client.get_tracking_info("upstream")
 
 # Pull next unprocessed upstream event...
 next_upstream_event_position = 1 + (last_processed_position or 0)
 
 # Construct tracking information from next unprocessed event
-tracking = Tracking("upstream", next_upstream_event_position)
+tracking_info = TrackingInfo("upstream", next_upstream_event_position)
 
 # Define a consistency boundary
 cb = Query(items=[QueryItem(types=["example"], tags=["tag1", "tag2"])])
@@ -388,17 +505,21 @@ event = Event(
 
 # Append event within the consistency boundary
 condition = AppendCondition(fail_if_events_match=cb, after=last_known_position)
-commit_position1 = client.append([event], condition=condition, tracking=tracking)
+commit_position1 = client.append(
+    [event], condition=condition, tracking_info=tracking_info
+)
 print("Appended event at position:", commit_position1)
 
-# Idempotent retry — same event ID and condition and tracking information
+# Idempotent retry — same event ID and condition
 print("Retrying to append event at position:", last_known_position)
-commit_position2 = client.append([event], condition=condition, tracking=tracking)
+commit_position2 = client.append(
+    [event], condition=condition, tracking_info=tracking_info
+)
 assert commit_position1 == commit_position2
 print("Append returned same commit position:", commit_position2)
 
 # Check tracking information
-assert tracking.position == client.tracking("upstream")
+assert tracking_info.position == client.get_tracking_info("upstream")
 
 # Unconditional append with conflicting tracking information — expect an error
 try:
@@ -408,7 +529,7 @@ try:
         data=b"Hello, world!",
         uuid=str(uuid.uuid4()),  # different UUID
     )
-    client.append([conflicting_event], condition=None, tracking=tracking)
+    client.append([conflicting_event], condition=None, tracking_info=tracking_info)
 except IntegrityError as e:
     print("Conflicting event was rejected:", e)
 ```
@@ -419,3 +540,4 @@ except IntegrityError as e:
 - Event data is binary (`bytes`). Use a consistent serialization (e.g., JSON serialized to UTF-8 bytes, protobuf, msgpack) for your domain.
 - API keys must match the server configuration.
 - For TLS with self-signed certs, pass `ca_path` with your root/CA certificate.
+

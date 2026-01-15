@@ -22,12 +22,12 @@ The sections below detail the `umadb.v1.DCB` service defined in
 
 UmaDB's gRPC service for reading and appending events exposes four RPC methods:
 
-| Name              | Request                                | Response                                         | Description                                                                                                                           |
-|-------------------|----------------------------------------|--------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
-| `Append`          | [`AppendRequest`](#append-request)     | [`AppendResponse`](#append-response)             | Appends new events atomically, with optional append condition, and optional tracking information.                                     |
-| `Read`            | [`ReadRequest`](#read-request)         | **stream**&nbsp;[`ReadResponse`](#read-response) | Streams stored events from the server to the client, optionally as a subscription.                                                    |
-| `Head`            | [`HeadRequest`](#head-request)         | [`HeadResponse`](#head-response)                 | Returns the position of the last event in the database; used to measure the volume of stored events.                                  |
-| `GetTrackingInfo` | [`TrackingRequest`](#tracking-request) | [`TrackingResponse`](#tracking-response)         | Returns the last recorded position of an event from an upstream sequence; used when starting or resuming event processing components. |
+| Name              | Request                                | Response                                         | Description                                                                                                                            |
+|-------------------|----------------------------------------|--------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
+| `Append`          | [`AppendRequest`](#append-request)     | [`AppendResponse`](#append-response)             | Appends new events atomically, with optional append condition, and optional tracking information.                                      |
+| `Read`            | [`ReadRequest`](#read-request)         | **stream**&nbsp;[`ReadResponse`](#read-response) | Streams stored events from the server to the client, optionally as a subscription.                                                     |
+| `Head`            | [`HeadRequest`](#head-request)         | [`HeadResponse`](#head-response)                 | Returns the position of the last event in the database; used to measure the volume of stored events.                                   |
+| `GetTrackingInfo` | [`TrackingRequest`](#tracking-request) | [`TrackingResponse`](#tracking-response)         | Returns the last recorded position in an upstream sequence of events; used when starting or resuming event processing components. |
 
 ## Append Request
 
@@ -119,21 +119,21 @@ The `position` field contains the sequence position of the last recorded event i
 
 ## Tracking Request
 
-Send a `TrackingRequest` to the [`GetTrackingInfo`](#dcb-service) RPC to get the last recorded position of an event from an upstream sequence.
+Send a `TrackingRequest` to the [`GetTrackingInfo`](#dcb-service) RPC to get the last recorded position in an upstream sequence of events.
 
-| Field    | Type     | Description                     |
-|----------|----------|---------------------------------|
-| `source` | `string` | The name of an upstream source. |
+| Field    | Type     | Description             |
+|----------|----------|-------------------------|
+| `source` | `string` | Upstream sequence name. |
 
 ## Tracking Response
 
 The server returns a `TrackingResponse` message in response to each [`TrackingRequest`](#tracking-request) message sent by clients to the [`GetTrackingInfo`](#dcb-service) RPC.
 
-| Field      | Type                       | Description                               |
-|------------|----------------------------|-------------------------------------------|
-| `position` | **optional**&nbsp;`uint64` | The position of the last processed event. |
+| Field      | Type                       | Description                 |
+|------------|----------------------------|-----------------------------|
+| `position` | **optional**&nbsp;`uint64` | The last recorded position. |
 
-The `position` field contains the upstream position of the last processed event from a source, or `None` if the source name is not found.
+The `position` field contains the last recorded position in an upstream sequence of events, or `None` if the sequence name is not found.
 
 ## Event
 
@@ -178,15 +178,15 @@ by a decision model.
 
 ## Tracking Info
 
-A `TrackingInfo` message represents the position of an event in an upstream sequence of events.
+A `TrackingInfo` message represents the source and position of an upstream event.
 
 | Field      | Type     | Description               |
 |------------|----------|---------------------------|
-| `source`   | `string` | Upstream source name.     |
+| `source`   | `string` | Upstream sequence name.   |
 | `position` | `uint64` | Upstream sequence number. |
 
 Include in:
-* [`AppendRequest`](#append-request) when recording new events that result from processing an event from an upstream source.
+* [`AppendRequest`](#append-request) when recording the results of processing an upstream event.
 
 ## Query
 
