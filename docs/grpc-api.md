@@ -248,14 +248,15 @@ set to a appropriate [`ErrorType`](#error-type).
 
 The `ErrorType` enum indicates UmaDB error types returned within an [`ErrorResponse`](#error-response) .
 
-| Value | Name            | Description                                          |
-|-------|-----------------|------------------------------------------------------|
-| `0`   | `IO`            | Input/output error (e.g. storage or filesystem).     |
-| `1`   | `SERIALIZATION` | Serialization or deserialization failure.            |
-| `2`   | `INTEGRITY`     | Logical integrity violation (e.g. condition failed). |
-| `3`   | `CORRUPTION`    | Corrupted or invalid data detected.                  |
-| `4`   | `INTERNAL`      | Internal server or database error.                   |
-| `5`   | `AUTHENTICATION` | Client-server authentication error.                 |
+| Value | Name               | Description                                          |
+|-------|--------------------|------------------------------------------------------|
+| `0`   | `IO`               | Input/output error (e.g. storage or filesystem).     |
+| `1`   | `SERIALIZATION`    | Serialization or deserialization failure.            |
+| `2`   | `INTEGRITY`        | Logical integrity violation (e.g. condition failed). |
+| `3`   | `CORRUPTION`       | Corrupted or invalid data detected.                  |
+| `4`   | `INTERNAL`         | Internal server or database error.                   |
+| `5`   | `AUTHENTICATION`   | Client-server authentication error.                  |
+| `6`   | `INVALID_ARGUMENT` | Request contains an invalid argument.                |
 
 ## Summary
 

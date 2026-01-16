@@ -425,15 +425,16 @@ Included in:
 
 The `DCBError` enum represents all errors that can occur in UmaDB.
 
-| Variant                          | Description                                         |
-|----------------------------------|-----------------------------------------------------|
-| `TransportError(message)`        | Client-server connection failed.                    |
-| `AuthenticationError(message)`   | Client-server authentication failed.                |
-| `IntegrityError(message)`        | Append condition failed or data integrity violated. |
-| `Corruption(message)`            | Corruption detected in stored data.                 |
-| `SerializationError(message)`    | Failure to serialize data to bytes.                 |
-| `InternalError(message)`         | Unexpected internal server error.                   |
-| `Io(error)`                      | Other errors.                                       |
+| Variant                        | Description                                         |
+|--------------------------------|-----------------------------------------------------|
+| `TransportError(message)`      | Client-server connection failed.                    |
+| `AuthenticationError(message)` | Client-server authentication failed.                |
+| `IntegrityError(message)`      | Append condition failed or data integrity violated. |
+| `InvalidArgument(message)`     | Invalid argument errors.                            |
+| `Corruption(message)`          | Corruption detected in stored data.                 |
+| `SerializationError(message)`  | Failure to serialize data to bytes.                 |
+| `InternalError(message)`       | Unexpected internal server error.                   |
+| `Io(error)`                    | Other errors.                                       |
 
 
 ## Result
