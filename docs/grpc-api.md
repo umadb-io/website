@@ -230,7 +230,34 @@ A `SequencedEvent` represents a recorded [`Event`](#event) along with its assign
 Included in:
 * [`ReadResponse`](#read-response) when the server responds to read requests.
 
+## Authentication
+
+UmaDB servers can be configured to require TLS and an API key for client requests. When enabled, clients must include
+the API key in the `Authorization` metadata of each gRPC request.
+
+```
+Authorization: Bearer <API_KEY>
+```
+
+### Example (Python gRPC client)
+
+```python
+import grpc
+
+metadata = [('authorization', f'Bearer {API_KEY}')]
+stub = UmaDBStub(channel)
+response = stub.SomeRpcMethod(request, metadata=metadata)
+```
+
+Notes:
+- Header keys are case-insensitive; the server will recognize Authorization, authorization, or any variation.
+- The header value (Bearer <API_KEY>) is case-sensitive, so Bearer must be capitalized exactly as shown, with a single space between Bearer and the API key.
+- Requests without a valid API key will be rejected with an `UNAUTHENTICATED` gRPC status, with status
+  details showing an `AUTHENTICATION` [error_type](#error-response).
+- Replace <API_KEY> with the key provided by the server administrator.
+
 ## Error Response
+
 
 An `ErrorResponse` is used to return errors from the gRPC API.
 
