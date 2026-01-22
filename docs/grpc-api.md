@@ -29,6 +29,7 @@ UmaDB's gRPC service for reading and appending events exposes four RPC methods:
 | `Head`            | [`HeadRequest`](#head-request)         | [`HeadResponse`](#head-response)                 | Returns the position of the last event in the database; used to measure the volume of stored events.                                   |
 | `GetTrackingInfo` | [`TrackingRequest`](#tracking-request) | [`TrackingResponse`](#tracking-response)         | Returns the last recorded position in an upstream sequence of events; used when starting or resuming event processing components. |
 
+
 ## Append Request
 
 Send an `AppendRequest` to the [`Append`](#dcb-service) RPC to store new events.
@@ -49,6 +50,7 @@ attribute will have a serialised [`ErrorResponse`](#error-response) message, tha
 and [`INTEGRITY`](#error-type) as the `error_type`.
 
 Conditional appending of events with UUIDs is idempotent. The server does not enforce uniqueness of event IDs.
+
 
 ## Append Response
 
@@ -82,6 +84,7 @@ The server will return a stream of [`ReadResponse`](#read-response) messages. Th
 `false`, meaning the stream will end when all selected events have been received. When `subscribe` is `true`, the stream
 will continue as new events are appended to the store.
 
+
 ## Read Response
 
 A stream of `ReadResponse` messages are sent in response to each [`ReadRequest`](#read-request).
@@ -101,11 +104,13 @@ Otherwise, if [`ReadRequest.subscribe`](#read-request) was `true`, the value of 
 Otherwise, if [`ReadRequest.limit`](#read-request) was a `uint64`, the value of `head` will be the position
 of the last event in the message's `events` field.
 
+
 ## Head Request
 
 Send a `HeadRequest` to the [`Head`](#dcb-service) RPC to get the position of the last recorded event in the event store.
 
 _This message has no fields._
+
 
 ## Head Response
 
@@ -117,6 +122,7 @@ The server returns a `HeadResponse` message in response to each [`HeadRequest`](
 
 The `position` field contains the sequence position of the last recorded event in the store, or `None` if the store is empty.
 
+
 ## Tracking Request
 
 Send a `TrackingRequest` to the [`GetTrackingInfo`](#dcb-service) RPC to get the last recorded position in an upstream sequence of events.
@@ -124,6 +130,7 @@ Send a `TrackingRequest` to the [`GetTrackingInfo`](#dcb-service) RPC to get the
 | Field    | Type     | Description             |
 |----------|----------|-------------------------|
 | `source` | `string` | Upstream sequence name. |
+
 
 ## Tracking Response
 
@@ -134,6 +141,7 @@ The server returns a `TrackingResponse` message in response to each [`TrackingRe
 | `position` | **optional**&nbsp;`uint64` | The last recorded position. |
 
 The `position` field contains the last recorded position in an upstream sequence of events, or `None` if the sequence name is not found.
+
 
 ## Event
 
@@ -158,6 +166,7 @@ Included in:
 Matched by:
 * [`QueryItem`](#query-item) during [`Read`](#dcb-service) and [`Append`](#dcb-service) operations.
 
+
 ## Append Condition
 
 An `AppendCondition` causes an append request to fail if events match its [`Query`](#query), optionally after
@@ -176,6 +185,7 @@ To implement a consistency boundary, command handlers can use the same [`Query`]
 the [`ReadResponse`](#read-response) as the value of `after`, when appending new events generated
 by a decision model.
 
+
 ## Tracking Info
 
 A `TrackingInfo` message represents the source and position of an upstream event.
@@ -187,6 +197,7 @@ A `TrackingInfo` message represents the source and position of an upstream event
 
 Include in:
 * [`AppendRequest`](#append-request) when recording the results of processing an upstream event.
+
 
 ## Query
 
@@ -201,6 +212,7 @@ An [`Event`](#event) is selected if any [`QueryItem`](#query-item) matches or th
 Include in:
 * [`ReadRequest`](#read-request) to select events returned by the server.
 * [`AppendCondition`](#append-condition) to select conflicting events.
+
 
 ## Query Item
 
@@ -218,6 +230,7 @@ A `QueryItem` will match an [`Event`](#event) if:
 Include in:
 * [`Query`](#query) to define which events to select.
 
+
 ## Sequenced Event
 
 A `SequencedEvent` represents a recorded [`Event`](#event) along with its assigned sequence number.
@@ -229,6 +242,7 @@ A `SequencedEvent` represents a recorded [`Event`](#event) along with its assign
 
 Included in:
 * [`ReadResponse`](#read-response) when the server responds to read requests.
+
 
 ## Authentication
 
@@ -256,8 +270,8 @@ Notes:
   details showing an `AUTHENTICATION` [error_type](#error-response).
 - Replace <API_KEY> with the key provided by the server administrator.
 
-## Error Response
 
+## Error Response
 
 An `ErrorResponse` is used to return errors from the gRPC API.
 
@@ -270,6 +284,7 @@ If an operation fails, the server will return a gRPC error response with a suita
 and a human-readable message string. In addition, the gRPC status details attribute will have a serialised
 `ErrorResponse` message that has the same human-readable message string, and an `error_type`
 set to a appropriate [`ErrorType`](#error-type).
+
 
 ## Error Type
 
@@ -284,6 +299,7 @@ The `ErrorType` enum indicates UmaDB error types returned within an [`ErrorRespo
 | `4`   | `INTERNAL`         | Internal server or database error.                   |
 | `5`   | `AUTHENTICATION`   | Client-server authentication error.                  |
 | `6`   | `INVALID_ARGUMENT` | Request contains an invalid argument.                |
+
 
 ## Summary
 
