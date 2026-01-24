@@ -267,7 +267,7 @@ Notes:
 - Header keys are case-insensitive; the server will recognize Authorization, authorization, or any variation.
 - The header value (Bearer <API_KEY>) is case-sensitive, so Bearer must be capitalized exactly as shown, with a single space between Bearer and the API key.
 - Requests without a valid API key will be rejected with an `UNAUTHENTICATED` gRPC status, with status
-  details showing an `AUTHENTICATION` [error_type](#error-response).
+  details showing an `AUTHENTICATION` [error](#error-response).
 - Replace <API_KEY> with the key provided by the server administrator.
 
 
@@ -275,16 +275,19 @@ Notes:
 
 An `ErrorResponse` is used to return errors from the gRPC API.
 
+If an operation fails, the server will return a gRPC response with a standard gRPC error status,
+and a human-readable message string. In addition, the gRPC status details will have a serialised
+`ErrorResponse` message with the same human-readable message string and an `error_type`
+set to a appropriate API [`ErrorType`](#error-type).
+
 | Field        | Type                       | Description                              |
 |--------------|----------------------------|------------------------------------------|
 | `message`    | `string`                   | Human-readable description of the error. |
 | `error_type` | [`ErrorType`](#error-type) | Classification of the error.             |
 
-If an operation fails, the server will return a gRPC error response with a suitable gRPC status code
-and a human-readable message string. In addition, the gRPC status details attribute will have a serialised
-`ErrorResponse` message that has the same human-readable message string, and an `error_type`
-set to a appropriate [`ErrorType`](#error-type).
-
+Clients should attempt to read the status details attribute and deserialize an `ErrorResponse`
+message into a suitable error or exception, and it that fails, then fall back to using
+standard gRPC error status with the given message string.
 
 ## Error Type
 

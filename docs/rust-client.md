@@ -9,9 +9,7 @@ head:
 ---
 # Rust Clients
 
-The [official Rust client](https://crates.io/crates/umadb-client) for UmaDB is available on crates.io.
-
-The Rust crate `umadb-client` provides both **asynchronous** and **synchronous** clients for reading and
+The Rust crate [`umadb-client`](https://crates.io/crates/umadb-client) provides both **asynchronous** and **synchronous** clients for reading and
 appending events in UmaDB via the UmaDB [gRPC API](./grpc-api).
 
 The synchronous client functions effectively as a wrapper around the asynchronous client.
