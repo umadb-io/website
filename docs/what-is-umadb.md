@@ -37,8 +37,12 @@ UmaDB makes new events fully durable before acknowledgements are returned to cli
 
 ## Getting Started
 
-Get started with UmaDB by [installing](./install) and [running](./cli) the `umadb` binary,
-or use the [Docker image](./docker).
+Get started by [installing UmaDB](./install) or using the [Docker image](./docker).
 
-Then try out the [Python](./python-client), [PHP](./php-client), or [Rust](./rust-client) client examples.
+Then try out one of the clients:
+* [Java client](./java-client)
+* [PHP client](./php-client)
+* [Python client](./python-client)
+* [Rust client](./rust-client)
+
 

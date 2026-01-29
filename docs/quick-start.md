@@ -5,7 +5,7 @@ head:
       content: How to get started with UmaDB
   - - meta
     - name: keywords
-      content: UmaDB, quick start, Python, Docker
+      content: UmaDB, quick start, Python, PHP, Rust, Java, Docker
 ---
 # Quick Start
 

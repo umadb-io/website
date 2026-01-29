@@ -11,9 +11,11 @@ head:
 
 ## Installing UmaDB
 
-Pre-built `umadb` binaries are available to download for Linux and macOS.
+Pre-built `umadb` binaries are available to [download](https://github.com/umadb-io/umadb/releases) for Linux and macOS.
 
-Alternatively, you can install using Cargo or run [Docker](./docker) containers.
+Alternatively, you can install using [Cargo](https://crates.io/crates/umadb) or run [Docker](./docker) containers.
+
+For details on using UmaDB, see the [Command Line Interface](./cli) guide.
 
 ## Download Binaries
 

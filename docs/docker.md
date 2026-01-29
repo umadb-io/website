@@ -45,7 +45,7 @@ The container's `ENTRYPOINT` is the `umadb` binary. By default, it is invoked wi
 
 This means the container will start UmaDB listening on port **50051** and using **/data/uma.db** as the database file.
 
-You may override the default arguments by supplying your own (e.g., `--help`, `--version`, or any other umadb options).
+You may override the default [command line arguments](./cli) by supplying your own.
 
 Print the `umadb` version:
 
@@ -88,7 +88,7 @@ UmaDB will then create and use `/path/to/local/data/uma.db` to store your events
 ## Transaction Layer Security
 
 By default, `umadb` starts an "insecure" gRPC server. To enable TLS, mount a local folder
-containing you certificate and key, and provide their paths via environment variables
+containing your certificate and key, and provide their paths via environment variables
 `UMADB_TLS_CERT` and `UMADB_TLS_KEY`. Use `-v` / `--volume` and `-e` / `--env` with `docker run`
 to set this up:
 
