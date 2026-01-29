@@ -42,10 +42,10 @@ export default defineConfig({
             {
                 text: 'Clients',
                 items: [
-                    { text: 'Java', link: '/java-client' },
-                    { text: 'PHP', link: '/php-client' },
-                    { text: 'Python', link: '/python-client' },
-                    { text: 'Rust', link: '/rust-client' },
+                    { text: 'Java Client', link: '/java-client' },
+                    { text: 'PHP Client', link: '/php-client' },
+                    { text: 'Python Client', link: '/python-client' },
+                    { text: 'Rust Client', link: '/rust-client' },
                 ]
             },
         ],
