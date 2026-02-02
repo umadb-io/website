@@ -11,6 +11,11 @@ head:
 
 ![UmaDB logo](/images/UmaDB-brand-figure-torso-and-lettering.png)
 
+## Podcast Episode
+
+<video controls="controls" src="./public/podcast/episode-1-2026-01-31/umadb-podcast-episode-1-full.mp4" />
+
+
 ## What is UmaDB?
 
 UmaDB is a specialist open-source event store built for Dynamic Consistency Boundaries.

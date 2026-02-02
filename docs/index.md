@@ -16,7 +16,7 @@ hero:
       text: Get Started
       link: /what-is-umadb
     - theme: alt
-      text: View on GitHub
+      text: ⭐ Star on GitHub
       link: https://github.com/umadb-io/umadb
       
 features:
