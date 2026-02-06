@@ -42,9 +42,10 @@ export default defineConfig({
             {
                 text: 'Clients',
                 items: [
+                    { text: '.NET Client', link: '/dotnet-client' },
                     { text: 'Java Client', link: '/java-client' },
-                    { text: 'PHP Client', link: '/php-client' },
                     { text: 'Python Client', link: '/python-client' },
+                    { text: 'PHP Client', link: '/php-client' },
                     { text: 'Rust Client', link: '/rust-client' },
                 ]
             },
@@ -68,9 +69,10 @@ export default defineConfig({
             {
                 text: 'Clients',
                 items: [
+                    { text: '.NET Client', link: '/dotnet-client' },
                     { text: 'Java Client', link: '/java-client' },
-                    { text: 'PHP Client', link: '/php-client' },
                     { text: 'Python Client', link: '/python-client' },
+                    { text: 'PHP Client', link: '/php-client' },
                     { text: 'Rust Client', link: '/rust-client' },
                 ]
             },
@@ -78,7 +80,7 @@ export default defineConfig({
         ],
         footer: {
             message: 'Released under the MIT License.',
-            copyright: 'Copyright © 2025'
+            copyright: 'Copyright © 2026'
         },
         editLink: {
             pattern: 'https://github.com/umadb-io/website/edit/main/docs/:path',
