@@ -67,26 +67,39 @@ class Client(
 ```python
 from umadb import Client
 
-# Insecure (no TLS)
+# Without TLS (insecure connection)
 client = Client("http://localhost:50051")
 
-# Secure with TLS (system CAs)
+    
+# With batch size hint (insecure connection)
+client = Client(
+    url="http://example.com:50051",
+    batch_size=1000,
+)
+
+# With TLS (system CAs)
 client = Client("https://example.com:50051")
 
-# Secure with TLS using self-signed CA
+# With TLS (system CAs) + API key
+client = Client(
+    url="https://example.com:50051",
+    api_key="umadb:example-api-key-4f7c2b1d9e5f4a038c1a",
+)
+
+# With TLS (self-signed)
 client = Client(
     url="https://localhost:50051",
     ca_path="server.pem",
 )
 
-# TLS + API key
+# With TLS (self-signed) + API key
 client = Client(
     url="https://example.com:50051",
     ca_path="server.pem",
     api_key="umadb:example-api-key-4f7c2b1d9e5f4a038c1a",
 )
 
-# TLS + API key + batch size hint
+# With TLS (self-signed) + API key + batch size hint
 client = Client(
     url="https://example.com:50051",
     ca_path="server.pem",

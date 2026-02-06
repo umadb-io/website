@@ -90,26 +90,36 @@ The examples below show how to construct synchronous and asynchronous connection
 use umadb_client::UmaDBClient;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Synchronous client without TLS (insecure connection)
+    // Without TLS (insecure connection)
     let client = UmaDBClient::new("http://localhost:50051".to_string())
         .connect()?;
 
-    // Synchronous client with TLS (secure connection)
+    // With batch size hint (insecure connection)
+    let client = UmaDBClient::new("http://localhost:50051".to_string())
+        .batch_size(1000)
+        .connect()?;
+
+    // With TLS (system CAs)
     let client = UmaDBClient::new("https://example.com:50051".to_string())
         .connect()?;
 
-    // Synchronous client with TLS (self-signed server certificate)
+    // With TLS (system CAs) + API key
+    let client = UmaDBClient::new("https://example.com:50051".to_string())
+        .api_key("umadb:example-api-key-4f7c2b1d9e5f4a038c1a".to_string())
+        .connect()?;
+
+    // With TLS (self-signed)
     let client = UmaDBClient::new("https://localhost:50051".to_string())
         .ca_path("server.pem".to_string())
         .connect()?;
 
-    // Synchronous client with TLS and API key
+    // With TLS (self-signed) + API key
     let client = UmaDBClient::new("https://example.com:50051".to_string())
         .ca_path("server.pem".to_string())
         .api_key("umadb:example-api-key-4f7c2b1d9e5f4a038c1a".to_string())
         .connect()?;
 
-    // Synchronous client with TLS and API key and batch size
+    // With TLS (self-signed) + API key + batch size hint
     let client = UmaDBClient::new("https://example.com:50051".to_string())
         .ca_path("server.pem".to_string())
         .api_key("umadb:example-api-key-4f7c2b1d9e5f4a038c1a".to_string())
@@ -124,26 +134,36 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 use umadb_client::UmaDBClient;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Asynchronous client without TLS (insecure connection)
+    // Without TLS (insecure connection)
     let client = UmaDBClient::new("http://localhost:50051".to_string())
         .connect_async().await?;
 
-    // Asynchronous client with TLS (secure connection)
+    // With batch size hint (insecure connection)
+    let client = UmaDBClient::new("http://localhost:50051".to_string())
+        .batch_size(1000)
+        .connect_async().await?;
+
+    // With TLS (system CAs)
     let client = UmaDBClient::new("https://example.com:50051".to_string())
         .connect_async().await?;
 
-    // Asynchronous client with TLS (self-signed server certificate)
+    // With TLS (system CAs) + API key
+    let client = UmaDBClient::new("https://example.com:50051".to_string())
+        .api_key("umadb:example-api-key-4f7c2b1d9e5f4a038c1a".to_string())
+        .connect_async().await?;
+
+    // With TLS (self-signed)
     let client = UmaDBClient::new("https://localhost:50051".to_string())
         .ca_path("server.pem".to_string())
         .connect_async().await?;
 
-    // Asynchronous client with TLS and API key
+    // With TLS (self-signed) + API key
     let client = UmaDBClient::new("https://example.com:50051".to_string())
         .ca_path("server.pem".to_string())
         .api_key("umadb:example-api-key-4f7c2b1d9e5f4a038c1a".to_string())
         .connect_async().await?;
 
-    // Asynchronous client with TLS and API key and batch size
+    // With TLS (self-signed) + API key + batch size hint
     let client = UmaDBClient::new("https://example.com:50051".to_string())
         .ca_path("server.pem".to_string())
         .api_key("umadb:example-api-key-4f7c2b1d9e5f4a038c1a".to_string())
