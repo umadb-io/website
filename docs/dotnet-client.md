@@ -9,7 +9,7 @@ head:
 ---
 # .NET Client
 
-A high-performance, low-allocation [.NET client](https://github.com/marcingolenia/umadb-net-client) for interacting with UmaDB via [gRPC](./grpc-api).
+A high-performance [.NET client](https://github.com/marcingolenia/umadb-net-client) for interacting with UmaDB via [gRPC](./grpc-api).
 
 Developed and maintained by [Marcin Golenia](https://github.com/marcingolenia).
 
