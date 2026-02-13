@@ -42,7 +42,7 @@ export default defineConfig({
             {
                 text: 'Clients',
                 items: [
-                    { text: '.NET', link: '/clients/dotnet/index' },
+                    { text: '.NET', link: '/clients/dotnet/' },
                     { text: 'Java', link: '/clients/java' },
                     { text: 'Python', link: '/clients/python' },
                     { text: 'PHP', link: '/clients/php' },
@@ -69,7 +69,7 @@ export default defineConfig({
             {
                 text: 'Clients',
                 items: [
-                    { text: '.NET', link: '/clients/dotnet/index' },
+                    { text: '.NET', link: '/clients/dotnet/' },
                     { text: 'Java', link: '/clients/java' },
                     { text: 'Python', link: '/clients/python' },
                     { text: 'PHP', link: '/clients/php' },
