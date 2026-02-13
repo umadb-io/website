@@ -51,35 +51,35 @@ open UmaDb.Client.Operations
 use client = connect "localhost" 50051 |> withApiKey "key" |> withTls |> build
 ```
 
-- **HTTP** (no TLS, no API key)
+HTTP (no TLS, no API key):
 
-  ```fsharp
-  use client = connect "localhost" 50051 |> build
-  ```
+```fsharp
+use client = connect "localhost" 50051 |> build
+```
 
-- **HTTPS, well-known CA** (no auth)
+HTTPS, well-known CA** (no auth):
 
-  ```fsharp
-  use client = connect "db.example.com" 443 |> withTls |> build
-  ```
+```fsharp
+use client = connect "db.example.com" 443 |> withTls |> build
+```
 
-- **HTTPS, well-known CA + API key**
+HTTPS, well-known CA + API key:
 
-  ```fsharp
-  use client = connect "db.example.com" 443 |> withApiKey "your-key" |> withTls |> build
-  ```
+```fsharp
+use client = connect "db.example.com" 443 |> withApiKey "your-key" |> withTls |> build
+```
 
-- **HTTPS, self-signed / custom CA** (no API key)
+HTTPS, self-signed / custom CA (no API key):
 
-  ```fsharp
-  use client = connect "internal.db" 443 |> withCaCert "certs/ca.pem" |> build
-  ```
+```fsharp
+use client = connect "internal.db" 443 |> withCaCert "certs/ca.pem" |> build
+```
 
-- **HTTPS, self-signed / custom CA + API key**
+HTTPS, self-signed / custom CA + API key:
 
-  ```fsharp
-  use client = connect "internal.db" 443 |> withCaCert "certs/ca.pem" |> withApiKey "your-key" |> build
-  ```
+```fsharp
+use client = connect "internal.db" 443 |> withCaCert "certs/ca.pem" |> withApiKey "your-key" |> build
+```
 
 **Notes:**
 

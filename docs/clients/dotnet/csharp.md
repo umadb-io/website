@@ -42,50 +42,50 @@ var options = new UmaClientOptions()
 using var client = UmaClient.Connect(options);
 ```
 
-- **HTTP** (no TLS, no API key)
+HTTP (no TLS, no API key):
 
-  ```csharp
-  UmaClient.Connect(new UmaClientOptions()
-      .WithHost("localhost")
-      .WithPort(50051))
-  ```
+```csharp
+UmaClient.Connect(new UmaClientOptions()
+  .WithHost("localhost")
+  .WithPort(50051))
+```
 
-- **HTTPS, well-known CA** (no auth)
+HTTPS, well-known CA (no auth):
 
-  ```csharp
-  UmaClient.Connect(new UmaClientOptions()
-      .WithHost("db.example.com")
-      .WithPort(443)
-      .EnableTls())
-  ```
+```csharp
+UmaClient.Connect(new UmaClientOptions()
+  .WithHost("db.example.com")
+  .WithPort(443)
+  .EnableTls())
+```
 
-- **HTTPS, well-known CA + API key**
+HTTPS, well-known CA + API key:
 
-  ```csharp
-  UmaClient.Connect(new UmaClientOptions()
-      .WithHost("db.example.com")
-      .WithPort(443)
-      .WithApiKey("your-key"))
-  ```
+```csharp
+UmaClient.Connect(new UmaClientOptions()
+  .WithHost("db.example.com")
+  .WithPort(443)
+  .WithApiKey("your-key"))
+```
 
-- **HTTPS, self-signed / custom CA** (no API key)
+HTTPS, self-signed / custom CA (no API key):
 
-  ```csharp
-  UmaClient.Connect(new UmaClientOptions()
-      .WithHost("internal.db")
-      .WithPort(443)
-      .WithCaCert("certs/ca.pem"))
-  ```
+```csharp
+UmaClient.Connect(new UmaClientOptions()
+  .WithHost("internal.db")
+  .WithPort(443)
+  .WithCaCert("certs/ca.pem"))
+```
 
-- **HTTPS, self-signed / custom CA + API key**
+HTTPS, self-signed / custom CA + API key:
 
-  ```csharp
-  UmaClient.Connect(new UmaClientOptions()
-      .WithHost("internal.db")
-      .WithPort(443)
-      .WithCaCert("certs/ca.pem")
-      .WithApiKey("your-key"))
-  ```
+```csharp
+UmaClient.Connect(new UmaClientOptions()
+  .WithHost("internal.db")
+  .WithPort(443)
+  .WithCaCert("certs/ca.pem")
+  .WithApiKey("your-key"))
+```
 
 **Notes:**
 
