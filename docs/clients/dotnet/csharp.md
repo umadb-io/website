@@ -2,14 +2,14 @@
 head:
   - - meta
     - name: description
-      content: How to use UmaDB with .NET
+      content: How to use UmaDB with .NET/C#
   - - meta
     - name: keywords
-      content: UmaDB, client, .NET
+      content: UmaDB, client, .NET, C#, CSharp
 ---
-# .NET Client
+# C# Client for UmaDB
 
-A high-performance [.NET client](https://github.com/marcingolenia/umadb-net-client) for interacting with UmaDB via [gRPC](./grpc-api).
+A high-performance [.NET/C# client](https://www.nuget.org/packages/UmaDb.Client/) for interacting with UmaDB via [gRPC](/grpc-api).
 
 Developed and maintained by [Marcin Golenia](https://github.com/marcingolenia).
 
@@ -18,14 +18,12 @@ The client is **async-only** (no synchronous API is provided or planned). If you
 
 ## Installation
 
-Install the [UmaDb.Client](https://www.nuget.org/packages/UmaDb.Client/) NuGet package. The package targets .NET 10.0 and is compatible with that framework or higher.
-
-**.NET CLI:**
+Install the [`UmaDb.Client`](https://www.nuget.org/packages/UmaDb.Client/) NuGet package. The package targets .NET 10.0+.
 
 ```bash
 dotnet add package UmaDb.Client
 ```
-For other installation methods see [Nuget page](https://www.nuget.org/packages/UmaDb.Client/)
+For other installation methods see [NuGet page](https://www.nuget.org/packages/UmaDb.Client/)
 
 
 ## Connection
@@ -33,6 +31,8 @@ For other installation methods see [Nuget page](https://www.nuget.org/packages/U
 Build options fluently, then connect:
 
 ```csharp
+using UmaDb.Client;
+
 var options = new UmaClientOptions()
     .WithHost("localhost")
     .WithPort(50051)

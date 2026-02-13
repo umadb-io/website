@@ -42,11 +42,11 @@ export default defineConfig({
             {
                 text: 'Clients',
                 items: [
-                    { text: '.NET Client', link: '/dotnet-client' },
-                    { text: 'Java Client', link: '/java-client' },
-                    { text: 'Python Client', link: '/python-client' },
-                    { text: 'PHP Client', link: '/php-client' },
-                    { text: 'Rust Client', link: '/rust-client' },
+                    { text: '.NET', link: '/clients/dotnet/index' },
+                    { text: 'Java', link: '/clients/java' },
+                    { text: 'Python', link: '/clients/python' },
+                    { text: 'PHP', link: '/clients/php' },
+                    { text: 'Rust', link: '/clients/rust' },
                 ]
             },
         ],
@@ -69,11 +69,11 @@ export default defineConfig({
             {
                 text: 'Clients',
                 items: [
-                    { text: '.NET Client', link: '/dotnet-client' },
-                    { text: 'Java Client', link: '/java-client' },
-                    { text: 'Python Client', link: '/python-client' },
-                    { text: 'PHP Client', link: '/php-client' },
-                    { text: 'Rust Client', link: '/rust-client' },
+                    { text: '.NET', link: '/clients/dotnet/index' },
+                    { text: 'Java', link: '/clients/java' },
+                    { text: 'Python', link: '/clients/python' },
+                    { text: 'PHP', link: '/clients/php' },
+                    { text: 'Rust', link: '/clients/rust' },
                 ]
             },
             { text: 'License', link: '/license' },

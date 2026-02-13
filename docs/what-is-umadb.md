@@ -45,10 +45,12 @@ UmaDB makes new events fully durable before acknowledgements are returned to cli
 Get started by [installing UmaDB](./install) or using the [Docker image](./docker).
 
 Then try out one of the clients:
-* [.NET client](./dotnet-client)
-* [Java client](./java-client)
-* [Python client](./python-client)
-* [PHP client](./php-client)
-* [Rust client](./rust-client)
+* [.NET clients](./clients/dotnet/index)
+  * [C# client](./clients/dotnet/csharp)
+  * [F# client](./clients/dotnet/fsharp)
+* [Java client](./clients/java)
+* [Python client](./clients/python)
+* [PHP client](./clients/php)
+* [Rust client](./clients/rust)
 
 

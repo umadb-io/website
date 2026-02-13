@@ -7,10 +7,10 @@ head:
     - name: keywords
       content: UmaDB, client, Python
 ---
-# Python Client
+# Python Client for UmaDB
 
 The Python package [`umadb`](https://pypi.org/project/umadb/) is available on PyPI and provides a synchronous
-client for reading and appending events to UmaDB over its [gRPC API](./grpc-api) using [Rust-powered bindings](./rust-client) via
+client for reading and appending events to UmaDB over its [gRPC API](../grpc-api.md) using [Rust-powered bindings](./rust) via
 [PyO3](https://pyo3.rs/).
 
 It is adapted into the Python [eventsourcing](https://eventsourcing.readthedocs.io/en/stable/topics/dcb.html)

@@ -7,9 +7,9 @@ head:
     - name: keywords
       content: UmaDB, client, Java
 ---
-# Java Client
+# Java Client for UmaDB
 
-A [lightweight Java client](https://github.com/DomenicDev/umadb-java-client) for interacting with the UmaDB event store via [gRPC](./grpc-api), supporting event appends, queries, and live event streaming.
+A [lightweight Java client](https://github.com/DomenicDev/umadb-java-client) for interacting with the UmaDB event store via [gRPC](/grpc-api), supporting event appends, queries, and live event streaming.
 
 Developed and maintained by [Domenic Cassisi](https://github.com/DomenicDev).
 
