@@ -15,14 +15,14 @@ Both clients share the same gRPC core and protocol, while providing idiomatic AP
 | Language | Package                                       | Status                                                                                     |
 |----------|-----------------------------------------------|--------------------------------------------------------------------------------------------|
 | C#       | [UmaDb.Client](/clients/dotnet/csharp)        | [![NuGet](https://img.shields.io/nuget/v/UmaDb.Client.svg)](/clients/dotnet/csharp)        |
-| F#       | [UmaDb.Client.FSharp](/clients/dotnet/fsharp) | [![NuGet](https://img.shields.io/nuget/v/UmaDb.Client.FSharp.svg)](/clients/dotnet/fsharp) |
+| F#       | [UmaDb.Client.Fsharp](/clients/dotnet/fsharp) | [![NuGet](https://img.shields.io/nuget/v/UmaDb.Client.Fsharp.svg)](/clients/dotnet/fsharp) |
 
 
 Quick NuGet commands:
 
 ```bash
-dotnet add package UmaDB.Client          # C#
-dotnet add package UmaDb.Client.FSharp   # F#
+dotnet add package UmaDb.Client          # C#
+dotnet add package UmaDb.Client.Fsharp   # F#
 ```
 
 Supported features:
