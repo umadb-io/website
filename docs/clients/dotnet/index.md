@@ -21,8 +21,8 @@ Both clients share the same gRPC core and protocol, while providing idiomatic AP
 Quick NuGet commands:
 
 ```bash
-dotnet add package UmaDB.Client      # C#
-dotnet add package UmaDB.FSharp      # F#
+dotnet add package UmaDB.Client          # C#
+dotnet add package UmaDb.Client.FSharp   # F#
 ```
 
 Supported features:
