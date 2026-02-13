@@ -42,6 +42,8 @@ var options = new UmaClientOptions()
 using var client = UmaClient.Connect(options);
 ```
 
+### Examples
+
 HTTP (no TLS, no API key):
 
 ```csharp

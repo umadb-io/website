@@ -51,13 +51,15 @@ open UmaDb.Client.Operations
 use client = connect "localhost" 50051 |> withApiKey "key" |> withTls |> build
 ```
 
+### Examples
+
 HTTP (no TLS, no API key):
 
 ```fsharp
 use client = connect "localhost" 50051 |> build
 ```
 
-HTTPS, well-known CA** (no auth):
+HTTPS, well-known CA (no auth):
 
 ```fsharp
 use client = connect "db.example.com" 443 |> withTls |> build
