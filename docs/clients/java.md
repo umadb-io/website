@@ -20,7 +20,7 @@ Add the following dependency to either the `build.gradle` or `pom.xml` file in y
 ### Gradle
 
 ```gradle
-implementation("io.github.domenicdev:umadb-java-client:0.2")
+implementation("io.github.domenicdev:umadb-java-client:0.5")
 ```
 
 ### Apache Maven
@@ -29,7 +29,7 @@ implementation("io.github.domenicdev:umadb-java-client:0.2")
 <dependency>
     <groupId>io.github.domenicdev</groupId>
     <artifactId>umadb-java-client</artifactId>
-    <version>0.2</version>
+    <version>0.5</version>
 </dependency>
 ```
 
