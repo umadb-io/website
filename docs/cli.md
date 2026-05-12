@@ -20,18 +20,26 @@ umadb --listen 127.0.0.1:50051 --db-path ./uma.db
 
 `umadb` supports the following command-line options:
 
-- `--listen`: Address to bind to [default: 127.0.0.1:50051]
-- `--db-path`: Path to database file or directory [default: ./uma.db]
-- `--tls-cert`: Path to server TLS certificate (PEM), optional
-- `--tls-key`: Path to server TLS private key (PEM), optional
-- `--api-key`: API key for authenticating clients, optional
-- `-h, --help`: Print help
-- `-V, --version`: Print version
-
-The TLS and API key options can also be provided using environment variables:
-* `UMADB_TLS_CERT` — Path to server TLS certificate (PEM), equivalent to `--tls-cert`
-* `UMADB_TLS_KEY` — Path to server TLS private key (PEM), equivalent to `--tls-key`
-* `UMADB_API_KEY` — API key for authenticating clients, equivalent to `--api-key`
+- `--db-path` — Path to the database file or directory 
+    - also via environment variable `UMADB_DB_PATH`
+- `--listen` — Server bind address (e.g. `127.0.0.1:50051`)
+    - also via environment variable `UMADB_LISTEN`
+- `--tls-cert` — Optional file path to TLS server certificate
+    - also via environment variable `UMADB_TLS_CERT`
+- `--tls-key` — Optional file path to TLS server private key
+    - also via environment variable `UMADB_TLS_KEY`
+- `--api-key` — Optional API key for authenticating clients
+    - also via environment variable `UMADB_API_KEY`
+- `--read-method` — Read method (mmap or fileio)
+    - also via environment variable `UMADB_READ_METHOD`
+- `--page-cache-max-pages` — Page cache max pages (0 to disable)
+    - also via environment variable `UMADB_PAGE_CACHE_MAX_PAGES`
+- `--page-cache-max-mb` — Page cache max size in MB (0 to disable)
+    - also via environment variable `UMADB_PAGE_CACHE_MAX_MB`
+- `--zero-fill-pages` — Zero-fill pages (true/false)
+    - also via environment variable `UMADB_ZERO_FILL_PAGES`
+- `-h, --help` — Print help
+- `-V, --version` - Print version
 
 ## Example with TLS and API key
 
@@ -39,11 +47,12 @@ The following command starts a UmaDB server with TLS enabled and an API key:
 
 ```bash
 umadb \
-  --listen 127.0.0.1:50051 \
   --db-path ./uma.db  \
+  --listen 127.0.0.1:50051 \
   --tls-cert server.pem \
   --tls-key server.key \
-  --api-key umadb:example-api-key-4f7c2b1d9e5f4a038c1a
+  --api-key umadb:example-api-key-4f7c2b1d9e5f4a038c1a \
+  --page-cache-max-mb 3000
 ```
 
 You can generate a `server.key` and `server.pem` pair using `openssl`.
