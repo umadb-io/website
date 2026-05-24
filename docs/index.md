@@ -38,12 +38,12 @@ features:
   - icon: 🦀
     title: Rust client
     details: Synchronous and async SDK for high-performance Rust apps.
-    link: /rust-client
+    link: /clients/rust
     color: "amber"
   - icon: 🐍
     title: Python client
     details: Ergonomic client for data science, AI, and backend work.
-    link: /python-client
+    link: /clients/python
     color: "red"
   - icon: 🐳
     title: Docker containers
