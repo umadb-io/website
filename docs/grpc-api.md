@@ -204,7 +204,7 @@ A metadata entry allows storing arbitrary string key-value pairs alongside event
 storing provenance information, correlation IDs, causation IDs, or other contextual data that should be
 preserved with the event. Metadata is stored with the event and returned unchanged when the event is read.
 Each metadata key and value may be up to 65535 bytes long; appending an event with a longer key or value
-fails with a validation error.
+fails with a validation error. Appending an event with duplicate metadata keys also fails with a validation error.
 
 Include in:
 * [`Event`](#event) to attach metadata.
