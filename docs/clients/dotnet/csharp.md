@@ -249,19 +249,20 @@ var evt = new UmaEvent(
     nameof(OrderCreated),
     JsonSerializer.SerializeToUtf8Bytes(payload),
     [$"order-{payload.OrderId}"],
-    metadata:
-    [
-        new("correlation-id", correlationId),
-        new("source", "checkout-api"),
-    ]
+    metadata: new Dictionary<string, string>
+    {
+        ["correlation-id"] = correlationId,
+        ["source"] = "checkout-api",
+    }
 );
 await client.AppendAsync([evt]);
 
 var (events, _) = await client.ReadListAsync(query);
-IReadOnlyList<KeyValuePair<string, string>>? meta = events[0].Event.Metadata;
+IReadOnlyDictionary<string, string>? meta = events[0].Event.Metadata;
+var correlation = meta?["correlation-id"];
 ```
 
-Metadata is an **ordered list** of key/value pairs (`IReadOnlyList<KeyValuePair<string, string>>`), not a dictionary. Order is preserved and **duplicate keys are allowed** — the store does not deduplicate, matching the wire format (`repeated MetadataEntry`). If you want dictionary lookup when reading, convert at the call site (e.g. `meta.ToDictionary(kv => kv.Key, kv => kv.Value)`), but be aware that drops duplicate keys.
+Metadata is a keyed map (`IReadOnlyDictionary<string, string>`). Keys are **unique** — the server rejects duplicate metadata keys on append. Entry order is not preserved (a dictionary is unordered); metadata is keyed lookup data, so read by key rather than by position.
 
 
 ## Example: full flow
@@ -323,7 +324,7 @@ Fluent options for `Connect`. **WithHost**(`string`), **WithPort**(`int`), **Wit
 
 ### Core types
 
-- **UmaEvent**(`EventType`, `Data` (bytes), `Tags?`, `Metadata?`, `Id?`) — event to append or read. `Metadata` is an ordered list of key/value pairs (`IReadOnlyList<KeyValuePair<string, string>>`); order is preserved and duplicate keys are allowed.
+- **UmaEvent**(`EventType`, `Data` (bytes), `Tags?`, `Metadata?`, `Id?`) — event to append or read. `Metadata` is a keyed map (`IReadOnlyDictionary<string, string>`) with server-enforced unique keys.
 - **SequencedUmaEvent**(`Position`, `Event`) — read result (each item from `ReadAsync`).
 - **UmaTrackingInfo**(`Source`, `Position`) — upstream checkpoint.
 - **AppendResponse** — `Position` (commit position).

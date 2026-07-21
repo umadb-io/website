@@ -229,15 +229,16 @@ let evt =
     { EventType = "OrderCreated"
       Data = ReadOnlyMemory(JsonSerializer.SerializeToUtf8Bytes(payload))
       Tags = Some [ tag ]
-      Metadata = Some [ ("correlation-id", correlationId); ("source", "checkout-api") ]
+      Metadata = Some (Map [ ("correlation-id", correlationId); ("source", "checkout-api") ])
       Id = None }
 let! _ = appendOperation [ evt ] |> append client ct
 
 let! events, _ = readList client query
-let meta = events.[0].Event.Metadata  // (string * string) list option
+let meta = events.[0].Event.Metadata  // Map<string, string> option
+let correlation = meta |> Option.bind (Map.tryFind "correlation-id")
 ```
 
-Metadata is an **ordered list** of key/value pairs (`(string * string) list option`), not a `Map`. Order is preserved and **duplicate keys are allowed** — the store does not deduplicate, matching the wire format (`repeated MetadataEntry`). If you prefer `Map` ergonomics when writing, build one and pipe `Map.toList` into the field; avoid `Map.ofList` when reading, as it silently drops duplicate keys.
+Metadata is a keyed `Map<string, string> option`. Keys are **unique** — the server rejects duplicate metadata keys on append. Entry order is not preserved (`Map` is key-sorted); metadata is keyed lookup data, so read by key rather than by position.
 
 ---
 
@@ -304,7 +305,7 @@ let! posResult2 = append client ct op
 
 ### Event (UmaDb.Client.Event)
 
-- **UmaEvent** — `EventType`, `Data` (ReadOnlyMemory&lt;byte&gt;), `Tags` (string list option), `Metadata` (`(string * string) list option`), `Id` (Guid option). Metadata is an ordered list; order is preserved and duplicate keys are allowed.
+- **UmaEvent** — `EventType`, `Data` (ReadOnlyMemory&lt;byte&gt;), `Tags` (string list option), `Metadata` (`Map<string, string> option`), `Id` (Guid option). Metadata is a keyed map with server-enforced unique keys.
 - **SequencedUmaEvent** — `Position: int64`, `Event: UmaEvent`.
 - **UmaTrackingInfo** — `Source: string`, `Position: int64`.
 
