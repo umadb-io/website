@@ -22,13 +22,13 @@ The sections below detail the `umadb.v1.DCB` service defined in
 
 UmaDB's gRPC service for reading and appending events exposes four RPC methods:
 
-| Name              | Request                                | Response                                                | Description                                                                                                                       |
-|-------------------|----------------------------------------|---------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
-| `Append`          | [`AppendRequest`](#append-request)     | [`AppendResponse`](#append-response)                    | Appends new events atomically, with optional append condition, and optional tracking information.                                 |
-| `Read`            | [`ReadRequest`](#read-request)         | **stream**&nbsp;[`ReadResponse`](#read-response)        | Streams already-recorded events from the server to the client.                                                                    |
-| `Subscribe`       | [`SubscribeRequest`](#stream-request)  | **stream**&nbsp;[`SubscribeResponse`](#stream-response) | Streams already-recorded and subsequently-recorded events from the server to the client.                                          |
-| `Head`            | [`HeadRequest`](#head-request)         | [`HeadResponse`](#head-response)                        | Returns the position of the last event in the database; used to measure the volume of stored events.                              |
-| `GetTrackingInfo` | [`TrackingRequest`](#tracking-request) | [`TrackingResponse`](#tracking-response)                | Returns the last recorded position in an upstream sequence of events; used when starting or resuming event processing components. |
+| Name              | Request                                  | Response                                                   | Description                                                                                                                         |
+|-------------------|------------------------------------------|------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| `Append`          | [`AppendRequest`](#append-request)       | [`AppendResponse`](#append-response)                       | Appends new events atomically, with optional append condition, and optional tracking information.                                   |
+| `Read`            | [`ReadRequest`](#read-request)           | **stream**&nbsp;[`ReadResponse`](#read-response)           | Streams already-recorded events from the server to the client.                                                                      |
+| `Subscribe`       | [`SubscribeRequest`](#subscribe-request) | **stream**&nbsp;[`SubscribeResponse`](#subscribe-response) | Streams already-recorded and subsequently-recorded events from the server to the client.                                            |
+| `Head`            | [`HeadRequest`](#head-request)           | [`HeadResponse`](#head-response)                           | Returns the position of the last event in the database; used to measure the volume of stored events.                                |
+| `GetTrackingInfo` | [`TrackingRequest`](#tracking-request)   | [`TrackingResponse`](#tracking-response)                   | Returns the last recorded position in an upstream sequence of events; used when starting or resuming event processing components.   |
 
 
 ## Append Request
