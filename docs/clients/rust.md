@@ -10,7 +10,7 @@ head:
 # Rust Clients for UmaDB
 
 The Rust crate [`umadb-client`](https://crates.io/crates/umadb-client) provides both **asynchronous** and **synchronous** clients for reading and
-appending events in UmaDB via the UmaDB [gRPC API](/grpc-api).
+appending events in UmaDB via the UmaDB [gRPC API](../grpc-api).
 
 The synchronous client functions effectively as a wrapper around the asynchronous client.
 
@@ -423,7 +423,7 @@ Include in:
 * [Append requests](#appending-events) to define optimistic concurrent control.
 
 To implement a consistency boundary, command handlers can use the same [`DcbQuery`](#query) used when
-[reading events](#read-request) as the value of `fail_if_events_match`, and the "head" sequence
+[reading events](#reading-events) as the value of `fail_if_events_match`, and the "head" sequence
 number received from the read response as the value of `after`.
 
 
@@ -438,6 +438,9 @@ A `TrackingInfo` instance indicates the source and position of an upstream event
 
 Include in:
 * [Append requests](#appending-events) when recording the results of processing an upstream event.
+
+Returned by:
+* [`SequencedEvent`](#sequenced-event) when reading events from the store.
 
 To implement exactly-once semantics in event-processing components, pull events from an upstream
 source after the [last recorded position](#getting-tracking-info), then record the upstream positions
@@ -481,10 +484,11 @@ A `DcbQueryItem` will match a [`DcbEvent`](#event) if:
 
 A `DcbSequencedEvent` represents a recorded [`DcbEvent`](#event) along with its assigned sequence number.
 
-| Field      | Type                  | Description          |
-|------------|-----------------------|----------------------|
-| `position` | `u64`                 | The sequence number. |
-| `event`    | [`DcbEvent`](#event)  | The recorded event.  |
+| Field           | Type                                     | Description           |
+|-----------------|------------------------------------------|-----------------------|
+| `position`      | `u64`                                    | The sequence number.  |
+| `event`         | [`DcbEvent`](#event)                     | The recorded event.   |
+| `tracking_info` | [`Option<TrackingInfo>`](#tracking-info) | Tracking information. |
 
 Included in:
 * [Read responses](#reading-events) when the server responds to read requests.

@@ -241,6 +241,9 @@ A `TrackingInfo` message represents the source and position of an upstream event
 Include in:
 * [`AppendRequest`](#append-request) when recording the results of processing an upstream event.
 
+Returned by:
+* [`SequencedEvent`](#sequenced-event) when reading events from the store.
+
 
 ## Query
 
@@ -278,10 +281,13 @@ Include in:
 
 A `SequencedEvent` represents a recorded [`Event`](#event) along with its assigned sequence number.
 
-| Field      | Type              | Description          |
-|------------|-------------------|----------------------|
-| `position` | `uint64`          | The sequence number. |
-| `event`    | [`Event`](#event) | The recorded event.  |
+| Field           | Type                                               | Description           |
+|-----------------|----------------------------------------------------|-----------------------|
+| `position`      | `uint64`                                           | The sequence number.  |
+| `event`         | [`Event`](#event)                                  | The recorded event.   |
+| `tracking_info` | **optional**&nbsp;[`TrackingInfo`](#tracking-info) | Tracking information. |
+
+The `tracking_info` field presents tracking information given in an [`AppendRequest`](#append-request).`
 
 Included in:
 * [`ReadResponse`](#read-response) when the server responds to read requests.
