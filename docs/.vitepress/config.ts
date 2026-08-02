@@ -43,6 +43,7 @@ export default defineConfig({
                 text: 'Clients',
                 items: [
                     { text: '.NET', link: '/clients/dotnet/', activeMatch: '/clients/dotnet/' },
+                    { text: 'Elixir', link: '/clients/elixir' },
                     { text: 'Java', link: '/clients/java' },
                     { text: 'Python', link: '/clients/python' },
                     { text: 'PHP', link: '/clients/php' },
@@ -70,6 +71,7 @@ export default defineConfig({
                 text: 'Clients',
                 items: [
                     { text: '.NET', link: '/clients/dotnet/', activeMatch: '/clients/dotnet/' },
+                    { text: 'Elixir', link: '/clients/elixir' },
                     { text: 'Java', link: '/clients/java' },
                     { text: 'Python', link: '/clients/python' },
                     { text: 'PHP', link: '/clients/php' },
