@@ -48,6 +48,7 @@ Then try out one of the clients:
 * [.NET clients](./clients/dotnet/index)
   * [C# client](./clients/dotnet/csharp)
   * [F# client](./clients/dotnet/fsharp)
+* [Elixir client](./clients/elixir)
 * [Java client](./clients/java)
 * [Python client](./clients/python)
 * [PHP client](./clients/php)
