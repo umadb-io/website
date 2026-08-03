@@ -490,6 +490,8 @@ A `DcbSequencedEvent` represents a recorded [`DcbEvent`](#event) along with its 
 | `event`         | [`DcbEvent`](#event)                     | The recorded event.   |
 | `tracking_info` | [`Option<TrackingInfo>`](#tracking-info) | Tracking information. |
 
+The `tracking_info` field presents tracking information given when calling [`append()`](#appending-events).
+
 Included in:
 * [Read responses](#reading-events) when the server responds to read requests.
 

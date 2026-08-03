@@ -287,7 +287,7 @@ A `SequencedEvent` represents a recorded [`Event`](#event) along with its assign
 | `event`         | [`Event`](#event)                                  | The recorded event.   |
 | `tracking_info` | **optional**&nbsp;[`TrackingInfo`](#tracking-info) | Tracking information. |
 
-The `tracking_info` field presents tracking information given in an [`AppendRequest`](#append-request).`
+The `tracking_info` field presents tracking information given in an [`AppendRequest`](#append-request).
 
 Included in:
 * [`ReadResponse`](#read-response) when the server responds to read requests.

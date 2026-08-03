@@ -445,6 +445,8 @@ A `SequencedEvent` represents a recorded [`Event`](#event) along with its assign
 | `event`         | [`Event`](#event)                      | The recorded event.   |
 | `tracking_info` | [`TrackingInfo\|None`](#tracking-info) | Tracking information. |
 
+The `tracking_info` field presents tracking information given when calling [`append()`](#appending-events).
+
 Included in:
 * [Read responses](#reading-events) when the server responds to read requests.
 
