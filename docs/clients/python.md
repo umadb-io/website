@@ -65,42 +65,42 @@ class Client(
 ### Connection Examples
 
 ```python
-from umadb import Client
+import umadb
 
 # Without TLS (insecure connection)
-client = Client("http://localhost:50051")
+client = umadb.Client("http://localhost:50051")
 
     
 # With batch size hint (insecure connection)
-client = Client(
+client = umadb.Client(
     url="http://example.com:50051",
     batch_size=1000,
 )
 
 # With TLS (system CAs)
-client = Client("https://example.com:50051")
+client = umadb.Client("https://example.com:50051")
 
 # With TLS (system CAs) + API key
-client = Client(
+client = umadb.Client(
     url="https://example.com:50051",
     api_key="umadb:example-api-key-4f7c2b1d9e5f4a038c1a",
 )
 
 # With TLS (self-signed)
-client = Client(
+client = umadb.Client(
     url="https://localhost:50051",
     ca_path="server.pem",
 )
 
 # With TLS (self-signed) + API key
-client = Client(
+client = umadb.Client(
     url="https://example.com:50051",
     ca_path="server.pem",
     api_key="umadb:example-api-key-4f7c2b1d9e5f4a038c1a",
 )
 
 # With TLS (self-signed) + API key + batch size hint
-client = Client(
+client = umadb.Client(
     url="https://example.com:50051",
     ca_path="server.pem",
     api_key="umadb:example-api-key-4f7c2b1d9e5f4a038c1a",
@@ -141,58 +141,74 @@ value can be used to wait for downstream event-processing components in a CQRS s
 ### Example
 
 ```python
-from uuid import uuid4
+import uuid
+import umadb
 
-from umadb import AppendCondition, Client, Event, IntegrityError, Query, QueryItem
-
-client = Client("http://localhost:50051")
-
-# Define a consistency boundary (same query you use while reading)
-cb = Query(items=[QueryItem(types=["example"], tags=["tag1", "tag2"])])
-
-# Read to build decision model
-read_resp = client.read(query=cb)
-for r in read_resp:
-    print(f"Existing event at {r.position}: {r.event}")
-
-last_known = read_resp.head()
-print("Last known position:", last_known)
+client = umadb.Client("http://localhost:50051")
 
 # Produce a new event with a UUID (for idempotent retries) and metadata
-ev = Event(
+new_event = umadb.Event(
     event_type="example",
     tags=["tag1", "tag2"],
     data=b"Hello, world!",
-    uuid=uuid4(),
-    metadata={"source": "example", "correlation_id": str(uuid.uuid4())},
+    uuid=uuid.uuid4(),
+    metadata={
+        "source": "example",
+        "correlation_id": str(uuid.uuid4()),
+    },
 )
 
-# Append with an optimistic condition: fail if conflicting events exist after last_known
-cond = AppendCondition(fail_if_events_match=cb, after=last_known)
-position1 = client.append([ev], condition=cond)
+# Define a consistency boundary (same query you use while reading)
+consistency_boundary = umadb.Query(
+    items=[
+        umadb.QueryItem(
+            types=["example"],
+            tags=["tag1", "tag2"],
+        )
+    ]
+)
+
+# Define an append condition, fails if events
+# match after last known position
+append_condition = umadb.AppendCondition(
+    fail_if_events_match=consistency_boundary,
+    after=client.head(),
+)
+
+# Append new events with append condition
+position1 = client.append(
+    events=[new_event],
+    condition=append_condition,
+)
 print("Appended at:", position1)
 
-# Conflicting append should raise an error
+
+# Idempotent operation: retry with same event UUID
+# and same append condition, returns same commit
+# position without recording any new events.
+position1_retry = client.append(
+    events=[new_event],
+    condition=append_condition,
+)
+assert position1 == position1_retry
+print("Idempotent retry position:", position1_retry)
+
+# Conflicting events raise an integrity error
 try:
     client.append(
         [
-            Event(
+            umadb.Event(
                 event_type="example",
                 tags=["tag1", "tag2"],
                 data=b"Hello, world!",
-                uuid=uuid4(),
+                uuid=uuid.uuid4(),  # <-- different event ID
                 metadata={},
             )
         ],
-        condition=cond,
+        condition=append_condition,
     )
-except IntegrityError as e:
+except umadb.IntegrityError as e:
     print("Conflicting event was rejected:", e)
-
-# Idempotent retry with same event UUID and condition should return same commit position
-position2 = client.append([ev], condition=cond)
-assert position1 == position2
-print("Idempotent retry returned position:", position2)
 ```
 
 ## Reading Events
@@ -236,18 +252,22 @@ event in the database when the reader transaction started.
 ### Example
 
 ```python
-from umadb import Client, Query, QueryItem
+import umadb
 
-client = Client("http://localhost:50051")
+client = umadb.Client("http://localhost:50051")
 
-# Filter by type(s) and tag(s)
-q = Query(items=[QueryItem(types=["example"], tags=["tag1", "tag2"])])
-
-resp = client.read(
-    query=q, start=None, backwards=False, limit=None
+# Select by type(s) and tag(s)
+query = umadb.Query(
+    items=[
+        umadb.QueryItem(
+            types=["example"],
+            tags=["tag1", "tag2"],
+        )
+    ]
 )
-for item in resp:
-    print(f"Got event at position {item.position}: {item.event}")
+
+for item in client.read(query):
+    print(f"Read sequenced event: {item.position}: {item.event}")
 
 last_known = resp.head()
 print("Last known position:", last_known)
@@ -281,18 +301,24 @@ Returns an iterable "subscription" instance from which [`SequencedEvent`](#seque
 ### Example
 
 ```python
-from umadb import Client, Query, QueryItem
+import umadb
 
-client = Client("http://localhost:50051")
+client = umadb.Client("http://localhost:50051")
 
 # Filter by type(s) and tag(s)
-q = Query(items=[QueryItem(types=["example"], tags=["tag1", "tag2"])])
+query = umadb.Query(
+    items=[
+        umadb.QueryItem(
+            types=["example"],
+            tags=["tag1", "tag2"],
+        )
+    ]
+)
 
-# Subscribe to selected events
-subscription = client.subscribe(query=q, after=None)
-for se in subscription:
-    print("New event:", se.position, se.event)
-    # Break for demo purposes
+# Subscribe to sequenced events
+for item in client.subscribe(query):
+    print("Received:", item.position, item.event)
+    # Break infinite loop...
     break
 ```
 
@@ -314,16 +340,17 @@ Returns the position (`u64`) of the last recorded event in the event store, or `
 
 ## Getting Tracking Info
 
-The `Client.get_tracking_info()` method returns the last recorded position in an upstream sequence of events.
+The `Client.get_tracking_info()` method returns the position after which to subscribe to
+events in an upstream sequence.
 
 ```python
 def get_tracking_info(self, source: str) -> int | None: ...
 ```
 
 The `Client.get_tracking_info()` method can be used when starting or resuming an
-event-processing component. The event-processing component will start by requesting new events from the upstream
-sequence after this position. The position of an upstream event that has been processed successfully can be [recorded
-atomically](#appending-events) when appending new events generated by processing that event.
+event-processing component. The event-processing component will start or resume processing
+upstream events after this position. The positions of processed events can be recorded
+when [appending new events](#appending-events) generated by processing those upstream events.
 
 ### Parameters
 
@@ -332,6 +359,88 @@ atomically](#appending-events) when appending new events generated by processing
 | `source`    | `str` | Upstream sequence name. |
 
 Returns the last recorded upstream position (`int`), or `None` if the sequence name is not found.
+
+
+## Checking Health
+
+The `Client.check_health()` method performs a unary health check against the server using the standard gRPC Health Checking protocol.
+
+```python
+def check_health(self, service: str = "") -> ServingStatus: ...
+```
+
+The `Client.check_health()` method queries the health status of the server or a specific service.
+
+### Parameters
+
+| Name      | Type  | Description                                                                                                                                           |
+|-----------|-------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `service` | `str` | Optional service name to check (default `""`). Use an empty string for overall server health, or a fully-qualified gRPC service name (e.g. `"umadb.v1.DCB"`). |
+
+### Return Value
+
+Returns the current [`ServingStatus`](#serving-status) of the server or service.
+
+### Example
+
+```python
+import umadb
+
+client = umadb.Client("http://localhost:50051")
+
+# Check overall server health
+status = client.check_health()
+assert status == umadb.ServingStatus.SERVING
+print("Overall server health:", status)
+
+# Check health of a specific service
+dcb_status = client.check_health("umadb.v1.DCB")
+print("DCB service health:", dcb_status)
+```
+
+
+## Watching Health
+
+The `Client.watch_health()` method opens a server-streaming health watch for the given service name.
+
+```python
+def watch_health(self, service: str = "") -> HealthWatch: ...
+```
+
+The `Client.watch_health()` method opens a stream of health status updates for the server or a specific service.
+The server immediately sends the current serving status and then pushes updates whenever the status changes.
+The returned [`HealthWatch`](#health-watch) iterator yields status updates until cancelled or the stream ends.
+
+### Parameters
+
+| Name      | Type  | Description                                                                                                                                           |
+|-----------|-------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `service` | `str` | Optional service name to watch (default `""`). Use an empty string for overall server health, or a fully-qualified gRPC service name (e.g. `"umadb.v1.DCB"`). |
+
+### Return Value
+
+Returns a [`HealthWatch`](#health-watch) iterator over [`ServingStatus`](#serving-status) values.
+
+### Example
+
+```python
+import umadb
+
+client = umadb.Client("http://localhost:50051")
+
+# Watch overall server health updates
+try:
+    watch = client.watch_health()
+    for status in watch:
+        if status == umadb.ServingStatus.SERVING:
+            print("Server is ready to handle requests")
+        elif status == umadb.ServingStatus.NOT_SERVING:
+            print("Server is shutting down")
+    else:
+        print("Server shutdown gracefully")
+except umadb.TransportError:
+    print("Lost connection to the server abruptly!")
+```
 
 ## Event
 
@@ -451,6 +560,29 @@ Included in:
 * [Read responses](#reading-events) when the server responds to read requests.
 
 
+## Serving Status
+
+The `ServingStatus` enum represents the health status of the server or a service returned by [`check_health()`](#checking-health) and [`watch_health()`](#watching-health).
+
+| Name              | Description                                                                            |
+|-------------------|----------------------------------------------------------------------------------------|
+| `UNKNOWN`         | The serving status is unknown.                                                         |
+| `SERVING`         | The server is ready to handle requests.                                                |
+| `NOT_SERVING`     | The server is not ready to handle requests.                                            |
+| `SERVICE_UNKNOWN` | The requested service is not known, used by [`watch_health()`](#watching-health) only. |
+
+
+## Health Watch
+
+A `HealthWatch` iterator provides a stream of [`ServingStatus`](#serving-status) updates.
+
+| Method     | Description                                                                                                        |
+|------------|--------------------------------------------------------------------------------------------------------------------|
+| `__iter__` | Returns the iterator itself.                                                                                       |
+| `__next__` | Returns the next [`ServingStatus`](#serving-status) update, or raises `StopIteration` when the stream ends.         |
+| `cancel()` | Explicitly cancels this individual health watch stream. Iterating after cancellation raises `CancelledByUserError`. |
+
+
 ## Error Handling
 
 The Python client raises Python exceptions on error:
@@ -458,6 +590,7 @@ The Python client raises Python exceptions on error:
 - Integrity/condition failure: `IntegrityError`
 - Transport/connection errors: `TransportError`
 - Authentication failures: `AuthenticationError`
+- Cancellation: `CancelledByUserError`
 - Invalid argument errors: `ValueError`
 - Other internal errors: `RuntimeError` or `OSError`
 
@@ -470,20 +603,24 @@ The append condition enables concurrency control.
 The event's UUID is used to support idempotency.
 
 ```python
-from uuid import uuid4
+import uuid
+import umadb
 
-from umadb import AppendCondition, Client, Event, IntegrityError, Query, QueryItem
-
-# Connect to the gRPC server (TLS + API key)
-client = Client(
-    url="http://localhost:50051",
-)
+# Connect to the gRPC server
+client = umadb.Client(url="http://localhost:50051")
 
 # Define a consistency boundary
-cb = Query(items=[QueryItem(types=["example"], tags=["tag1", "tag2"])])
+consistency_boundary = umadb.Query(
+    items=[
+        umadb.QueryItem(
+            types=["example"],
+            tags=["tag1", "tag2"],
+        )
+    ]
+)
 
 # Read events for a decision model
-read_response = client.read(query=cb)
+read_response = client.read(query=consistency_boundary)
 for result in read_response:
     print(f"Got event at position {result.position}: {result.event}")
 
@@ -491,31 +628,37 @@ for result in read_response:
 last_known = read_response.head()
 print("Last known position is:", last_known)
 
-# Create an event with a UUID to enable idempotent append and metadata
-event = Event(
+# Create an event with a UUID and metadata
+event = umadb.Event(
     event_type="example",
     tags=["tag1", "tag2"],
     data=b"Hello, world!",
-    uuid=uuid4(),
-    metadata={"source": "example", "correlation_id": str(uuid4())},
+    uuid=uuid.uuid4(),
+    metadata={
+        "source": "example",
+        "correlation_id": str(uuid.uuid4()),
+    },
 )
 
 # Append event within the consistency boundary
-condition = AppendCondition(fail_if_events_match=cb, after=last_known)
+condition = umadb.AppendCondition(
+    fail_if_events_match=consistency_boundary,
+    after=last_known,
+)
 commit_position1 = client.append([event], condition=condition)
 print("Appended event at position:", commit_position1)
 
 # Append conflicting event — expect an error
 try:
-    conflicting_event = Event(
+    conflicting_event = umadb.Event(
         event_type="example",
         tags=["tag1", "tag2"],
         data=b"Hello, world!",
-        uuid=uuid4(),  # different UUID
+        uuid=uuid.uuid4(),  # different UUID
         metadata={},
     )
     client.append([conflicting_event], condition=condition)
-except IntegrityError as e:
+except umadb.IntegrityError as e:
     print("Conflicting event was rejected:", e)
 
 # Idempotent retry — same event ID and condition
@@ -536,37 +679,36 @@ sequenced events, which supports replication of the
 tracking information to another instance of the database.
 
 ```python
-from uuid import uuid4
+import uuid
+import umadb
 
-from umadb import (
-    AppendCondition,
-    Client,
-    Event,
-    IntegrityError,
-    Query,
-    QueryItem,
-    TrackingInfo,
-)
-
-# Connect to the gRPC server (TLS + API key)
-client = Client(
-    url="http://localhost:50051",
-)
+# Connect to the server
+client = umadb.Client(url="http://localhost:50051")
 
 # Get last processed upstream event position
 last_processed_position = client.get_tracking_info("upstream")
 
 # Pull next unprocessed upstream event...
-next_upstream_event_position = 1 + (last_processed_position or 0)
+next_upstream_position = 1 + (last_processed_position or 0)
 
 # Construct tracking information from next unprocessed event
-tracking_info = TrackingInfo("upstream", next_upstream_event_position)
+tracking_info = umadb.TrackingInfo(
+    source="upstream",
+    position=next_upstream_position,
+ )
 
 # Define a consistency boundary
-cb = Query(items=[QueryItem(types=["example"], tags=["tag1", "tag2"])])
+consistency_boundary = umadb.Query(
+    items=[
+        umadb.QueryItem(
+            types=["example"],
+            tags=["tag1", "tag2"],
+        )
+    ]
+)
 
 # Read events for a decision model
-read_response = client.read(query=cb)
+read_response = client.read(query=consistency_boundary)
 for result in read_response:
     print(f"Got event at position {result.position}: {result.event}")
 
@@ -575,25 +717,36 @@ last_known = read_response.head()
 print("Last known position is:", last_known)
 
 # Create an event with a UUID to enable idempotent append and metadata
-event = Event(
+event = umadb.Event(
     event_type="example",
     tags=["tag1", "tag2"],
     data=b"Hello, world!",
-    uuid=uuid4(),
-    metadata={"source": "tracking_example", "correlation_id": str(uuid4())},
+    uuid=uuid.uuid4(),
+    metadata={
+        "source": "tracking_example",
+        "correlation_id": str(uuid.uuid4()),
+    },
 )
 
-# Append event within the consistency boundary
-condition = AppendCondition(fail_if_events_match=cb, after=last_known)
+# Append event within a consistency boundary
+append_condition = umadb.AppendCondition(
+    fail_if_events_match=consistency_boundary,
+    after=last_known,
+)
+
 commit_position1 = client.append(
-    [event], condition=condition, tracking_info=tracking_info
+    [event],
+    condition=append_condition,
+    tracking_info=tracking_info,
 )
 print("Appended event at position:", commit_position1)
 
 # Idempotent retry — same event ID and condition
 print("Retrying to append event at position:", last_known)
 commit_position2 = client.append(
-    [event], condition=condition, tracking_info=tracking_info
+    events=[event],
+    condition=append_condition,
+    tracking_info=tracking_info,
 )
 assert commit_position1 == commit_position2
 print("Append returned same commit position:", commit_position2)
@@ -603,20 +756,56 @@ assert tracking_info.position == client.get_tracking_info("upstream")
 
 # Unconditional append with conflicting tracking information — expect an error
 try:
-    conflicting_event = Event(
+    conflicting_event = umadb.Event(
         event_type="example",
         tags=["tag1", "tag2"],
         data=b"Hello, world!",
         uuid=uuid4(),  # different UUID
         metadata={},
     )
-    client.append([conflicting_event], condition=None, tracking_info=tracking_info)
-except IntegrityError as e:
+    client.append(
+        events=[conflicting_event],
+        condition=None,
+        tracking_info=tracking_info,
+    )
+except umadb.IntegrityError as e:
     print("Conflicting event was rejected:", e)
     
 # Show sequenced event has the given tracking information
 for sequenced in client.read(start=commit_position1):
     assert sequenced.tracking_info == tracking_info 
+```
+
+## Example with Health Checking
+
+This example demonstrates checking the health of an UmaDB server and streaming health status updates.
+
+```python
+import umadb
+
+# Connect to the server
+client = umadb.Client("http://localhost:50051")
+
+# Check overall server health
+try:
+    status = client.check_health()
+    print("Overall server health:", status)
+    if status == umadb.ServingStatus.SERVING:
+        print("Server is ready to accept requests")
+except umadb.TransportError as e:
+    print("Failed to reach server:", e)
+
+# Check health of a specific service
+dcb_status = client.check_health("umadb.v1.DCB")
+print("DCB service health:", dcb_status)
+
+# Stream health updates using watch_health()
+watch = client.watch_health()
+for status in watch:
+    print("Health update received:", status)
+    # Cancel the watch stream after inspecting initial status
+    watch.cancel()
+    break
 ```
 
 ## Notes
