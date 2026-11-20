@@ -306,7 +306,7 @@ let! posResult2 = append client ct op
 ### Event (UmaDb.Client.Event)
 
 - **UmaEvent** — `EventType`, `Data` (ReadOnlyMemory&lt;byte&gt;), `Tags` (string list option), `Metadata` (`Map<string, string> option`), `Id` (Guid option). Metadata is a keyed map with server-enforced unique keys.
-- **SequencedUmaEvent** — `Position: int64`, `Event: UmaEvent`.
+- **SequencedUmaEvent** — `Position: int64`, `Event: UmaEvent`, `TrackingInfo: UmaTrackingInfo option` (set when the event was appended with tracking info).
 - **UmaTrackingInfo** — `Source: string`, `Position: int64`.
 
 ### Query (UmaDb.Client.Query)
