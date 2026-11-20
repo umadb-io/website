@@ -47,6 +47,14 @@ pub fn ca_path(self, ca_path: String) -> Self
 
 The `ca_path` argument should be a path to the PEM-encoded root or CA certificate used to sign the server's certificate.
 
+The domain name used for TLS certificate verification and SNI can be overridden by calling `tls_domain()`.
+
+```rust
+pub fn tls_domain(self, domain: String) -> Self
+```
+
+The `domain` argument should exactly match a valid subject name or SAN listed inside the server's certificate.
+
 The client can be configured to use an API key for authentication by calling `api_key()`.
 
 ```rust
